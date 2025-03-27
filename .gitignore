@@ -1,15 +1,35 @@
+# ========== Android Studio Specific ==========
+.idea/
 *.iml
-.gradle
-/local.properties
-/.idea/caches
-/.idea/libraries
-/.idea/modules.xml
-/.idea/workspace.xml
-/.idea/navEditor.xml
-/.idea/assetWizardSettings.xml
 .DS_Store
-/build
-/captures
-.externalNativeBuild
-.cxx
-local.properties
+
+# Only ignore specific files if you need some parts of .idea
+# .idea/caches
+# .idea/libraries
+# .idea/modules.xml
+# .idea/workspace.xml
+# .idea/navEditor.xml
+# .idea/assetWizardSettings.xml
+
+# ========== Build Output ==========
+/build/
+/app/build/
+/.externalNativeBuild/
+/.cxx/
+/captures/
+
+# ========== Gradle ==========
+.gradle/
+/local.properties
+
+# ========== OS & IDE ========
+*.log
+*.hprof
+*.lock
+backup_idea/
+
+# ========== Misc ==========
+# Ignore emulator/device-specific or auto-generated files
+*.apk
+*.ap_
+
