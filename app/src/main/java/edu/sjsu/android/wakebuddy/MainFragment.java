@@ -5,6 +5,8 @@ import android.os.Bundle;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.navigation.NavController;
+import androidx.navigation.fragment.NavHostFragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -19,6 +21,7 @@ import java.util.ArrayList;
 
 public class MainFragment extends Fragment {
     private ArrayList<Alarm> alarms;
+    private NavController controller;
 
     public MainFragment() {
         // Required empty public constructor
@@ -51,6 +54,7 @@ public class MainFragment extends Fragment {
         alarmsRecyclerView.setLayoutManager(new LinearLayoutManager(requireContext()));
         AlarmAdapter adapter = new AlarmAdapter(alarms);
         alarmsRecyclerView.setAdapter(adapter);
+        controller = NavHostFragment.findNavController(this);
 
         // TODO: find way to change background based on if alarms are enabled, optional feature tbh
         ImageView background = view.findViewById(R.id.backgroundImg);
@@ -59,7 +63,7 @@ public class MainFragment extends Fragment {
         ImageButton addAlarmBtn = view.findViewById(R.id.addAlarmButton);
         addAlarmBtn.setOnClickListener(v -> {
             // TODO: handle onclick for adding alarms
-            Toast.makeText(getContext(), "Add alarm button clicked", Toast.LENGTH_SHORT).show();
+            goAddAlarm();
         });
 
         ImageButton settingsBtn = view.findViewById(R.id.alarmSettingsButton);
@@ -73,5 +77,9 @@ public class MainFragment extends Fragment {
             // TODO: handle onclick for calendar
             Toast.makeText(getContext(), "Add calendar button clicked", Toast.LENGTH_SHORT).show();
         });
+    }
+
+    public void goAddAlarm() {
+        controller.navigate(R.id.addAlarmFragment);
     }
 }
