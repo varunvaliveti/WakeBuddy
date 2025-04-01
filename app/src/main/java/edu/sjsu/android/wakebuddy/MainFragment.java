@@ -57,30 +57,21 @@ public class MainFragment extends Fragment {
         background.setImageResource(R.drawable.sky);
 
         ImageButton addAlarmBtn = view.findViewById(R.id.addAlarmButton);
-        addAlarmBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                // TODO: handle onclick for adding alarms
-                Toast.makeText(getContext(), "Add alarm button clicked", Toast.LENGTH_SHORT).show();
-            }
+        addAlarmBtn.setOnClickListener(v -> {
+            // TODO: handle onclick for adding alarms
+            Toast.makeText(getContext(), "Add alarm button clicked", Toast.LENGTH_SHORT).show();
         });
 
         ImageButton settingsBtn = view.findViewById(R.id.alarmSettingsButton);
-        settingsBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                // TODO: handle onclick for settings
-                Toast.makeText(getContext(), "Settings button clicked", Toast.LENGTH_SHORT).show();
-            }
+        settingsBtn.setOnClickListener(v -> {
+            // TODO: handle onclick for settings
+            Toast.makeText(getContext(), "Settings button clicked", Toast.LENGTH_SHORT).show();
         });
 
         ImageButton calendarBtn = view.findViewById(R.id.calendarButton);
-        calendarBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                // TODO: handle onclick for calendar
-                Toast.makeText(getContext(), "Add calendar button clicked", Toast.LENGTH_SHORT).show();
-            }
+        calendarBtn.setOnClickListener(v -> {
+            // TODO: handle onclick for calendar
+            Toast.makeText(getContext(), "Add calendar button clicked", Toast.LENGTH_SHORT).show();
         });
     }
 }

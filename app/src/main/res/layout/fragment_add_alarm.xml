@@ -1,0 +1,108 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".AddAlarmFragment">
+
+    <TimePicker
+        android:id="@+id/timePicker"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="@drawable/timepicker_background"
+        android:headerBackground="@color/orange"
+        android:timePickerMode="clock"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="32dp"
+        android:orientation="horizontal"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/timePicker">
+
+        <CheckBox
+            android:id="@+id/sunBox"
+            android:layout_margin="2dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@drawable/day_checkbox_background"
+            android:button="@null"
+            android:gravity="center"
+            android:padding="10dp"
+            android:text="Sun" />
+
+        <CheckBox
+            android:id="@+id/monBox"
+            android:layout_margin="2dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@drawable/day_checkbox_background"
+            android:button="@null"
+            android:gravity="center"
+            android:padding="10dp"
+            android:text="Mon" />
+
+        <CheckBox
+            android:id="@+id/tuesBox"
+            android:layout_margin="2dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@drawable/day_checkbox_background"
+            android:button="@null"
+            android:gravity="center"
+            android:padding="10dp"
+            android:text="Tues" />
+
+        <CheckBox
+            android:id="@+id/wedBox"
+            android:layout_margin="2dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@drawable/day_checkbox_background"
+            android:button="@null"
+            android:gravity="center"
+            android:padding="10dp"
+            android:text="Wed" />
+
+        <CheckBox
+            android:id="@+id/thursBox"
+            android:layout_margin="2dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@drawable/day_checkbox_background"
+            android:button="@null"
+            android:gravity="center"
+            android:padding="10dp"
+            android:text="Thurs" />
+
+        <CheckBox
+            android:id="@+id/friBox"
+            android:layout_margin="2dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@drawable/day_checkbox_background"
+            android:button="@null"
+            android:gravity="center"
+            android:padding="10dp"
+            android:text="Fri" />
+
+        <CheckBox
+            android:id="@+id/satBox"
+            android:layout_margin="2dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@drawable/day_checkbox_background"
+            android:button="@null"
+            android:gravity="center"
+            android:padding="10dp"
+            android:text="Sat" />
+    </LinearLayout>
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>
