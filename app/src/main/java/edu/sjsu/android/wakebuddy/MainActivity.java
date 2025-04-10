@@ -1,6 +1,10 @@
 package edu.sjsu.android.wakebuddy;
 
+import android.app.AlarmManager;
+import android.app.PendingIntent;
 import android.os.Bundle;
+import android.widget.Button;
+import android.widget.RadioGroup;
 
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
@@ -10,9 +14,17 @@ import androidx.core.view.WindowInsetsCompat;
 import androidx.navigation.NavController;
 import androidx.navigation.fragment.NavHostFragment;
 
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentTransaction;
 
 public class MainActivity extends AppCompatActivity {
     private NavController controller;
+
+    private AlarmManager alarmManager;
+    private PendingIntent pendingIntent;
+    private Button setAlarm;
+    private RadioGroup radioGroupTask;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
