@@ -1,3 +1,8 @@
 <resources>
     <string name="app_name">WakeBuddy</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="fragment_for_setting_alarms_requiring_movement">Fragment for setting alarms requiring movement</string>
+    <string name="fragment_for_setting_math_alarm">Fragment for setting math alarm</string>
+    <string name="fragment_for_setting_barcode_alarm">Fragment for setting barcode alarm</string>
 </resources>
