@@ -12,9 +12,7 @@
         tools:layout="@layout/fragment_welcome" >
         <action
             android:id="@+id/action_welcomeFragment_to_mainFragment"
-            app:destination="@id/mainFragment"
-            app:popUpTo="@id/welcomeFragment"
-            app:popUpToInclusive="true"/>
+            app:destination="@id/mainFragment" />
     </fragment>
 
     <fragment
@@ -30,5 +28,9 @@
         android:id="@+id/addAlarmFragment"
         android:name="edu.sjsu.android.wakebuddy.AddAlarmFragment"
         android:label="fragment_add_alarm"
-        tools:layout="@layout/fragment_add_alarm" />
+        tools:layout="@layout/fragment_add_alarm" >
+        <action
+            android:id="@+id/action_addAlarmFragment_to_mainFragment"
+            app:destination="@id/mainFragment" />
+    </fragment>
 </navigation>

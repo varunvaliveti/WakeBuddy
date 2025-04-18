@@ -4,8 +4,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".AddAlarmFragment"
-    android:padding="16dp">
+    android:padding="16dp"
+    tools:context=".AddAlarmFragment">
 
     <TimePicker
         android:id="@+id/timePicker"
@@ -121,8 +121,8 @@
             android:id="@+id/physicalAddAlarm"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
             android:layout_margin="4dp"
+            android:layout_weight="1"
             android:drawableTop="@drawable/scaled_walrus_button"
             android:gravity="center"
             android:text="Physical"
@@ -132,8 +132,8 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_margin="4dp"
-            android:drawableTop="@drawable/scaled_chicken_button"
             android:layout_weight="1"
+            android:drawableTop="@drawable/scaled_chicken_button"
             android:gravity="center"
             android:text="Yelling"
             android:textSize="12sp" />
@@ -141,8 +141,8 @@
         <RadioButton
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
             android:layout_margin="4dp"
+            android:layout_weight="1"
             android:drawableTop="@drawable/scaled_eagle_button"
             android:gravity="center"
             android:text="Math"
@@ -151,8 +151,8 @@
         <RadioButton
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
             android:layout_margin="4dp"
+            android:layout_weight="1"
             android:drawableTop="@drawable/scaled_racoon_button"
             android:gravity="center"
             android:text="Barcode"
@@ -165,10 +165,23 @@
         android:id="@+id/add_confirm_btn"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="32dp"
         android:text="Confirm"
-
+        app:layout_constraintBottom_toBottomOf="@+id/add_cancel_btn"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toEndOf="@+id/add_cancel_btn"
+        app:layout_constraintTop_toTopOf="@+id/add_cancel_btn"
+        app:layout_constraintVertical_bias="0.0" />
+
+    <Button
+        android:id="@+id/add_cancel_btn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="32dp"
+        android:backgroundTint="@color/red"
+        android:text="Cancel"
+        app:layout_constraintEnd_toStartOf="@+id/add_confirm_btn"
+        app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/radioGroup" />
 
