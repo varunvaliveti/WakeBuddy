@@ -44,6 +44,7 @@ public class WelcomeFragment extends Fragment {
 
     public void goMain() {
         NavController controller = NavHostFragment.findNavController(this);
+        controller.popBackStack(R.id.welcomeFragment,true);
         controller.navigate(R.id.mainFragment);
     }
 }
