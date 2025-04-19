@@ -14,6 +14,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CheckBox;
+import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.RadioGroup;
 import android.widget.TimePicker;
@@ -82,6 +83,8 @@ public class AddAlarmFragment extends Fragment {
 
             // TODO: Consider changing this time format when we actually create an alarm for the system
             //also, label seems kind of complicated atp, we can lowk just remove that field lol.
+            label = ((EditText) view.findViewById(R.id.alarm_name_entry)).getText().toString();
+
             String time = String.valueOf(hour>12?hour-12:hour)+":"+String.format("%02d",minute)+" "+ampm;
 
             LinearLayout linearLayout = view.findViewById(R.id.linearLayout);
@@ -100,7 +103,7 @@ public class AddAlarmFragment extends Fragment {
 
 
 
-           Alarm newAlarm = new Alarm(time, "test", theDays, true);
+           Alarm newAlarm = new Alarm(time, label, theDays, true);
 
            Bundle result = new Bundle();
            result.putSerializable("alarm", newAlarm);
