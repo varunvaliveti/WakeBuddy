@@ -23,9 +23,6 @@
         <action
             android:id="@+id/action_mainFragment_to_addAlarmFragment"
             app:destination="@id/addAlarmFragment" />
-        <argument
-            android:name="added_alarm"
-            app:argType="edu.sjsu.android.wakebuddy.Alarm" />
     </fragment>
     <fragment
         android:id="@+id/addAlarmFragment"
