@@ -1,5 +1,6 @@
 package edu.sjsu.android.wakebuddy;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -39,6 +40,7 @@ public class AlarmAdapter extends RecyclerView.Adapter<AlarmAdapter.AlarmViewHol
     @Override
     public void onBindViewHolder(@NonNull AlarmViewHolder holder, int position) {
         Alarm currAlarm = alarmList.get(position);
+        Log.d("",currAlarm.getTime());
         holder.alarmTimeTextView.setText(currAlarm.getTime());
         holder.alarmLabelTextView.setText(currAlarm.getLabel());
         holder.alarmDaysTextView.setText(currAlarm.getDays());

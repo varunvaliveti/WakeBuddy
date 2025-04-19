@@ -20,11 +20,12 @@ import android.widget.Toast;
 import java.util.ArrayList;
 
 public class MainFragment extends Fragment {
-    private ArrayList<Alarm> alarms;
+    private static ArrayList<Alarm> alarms;
     private NavController controller;
 
     public MainFragment() {
         // Required empty public constructor
+        alarms = new ArrayList<Alarm>();
     }
 
     @Override
@@ -33,7 +34,7 @@ public class MainFragment extends Fragment {
         if (getArguments() != null) {
             // Handle params here
         }
-        alarms = new ArrayList<>();
+        // alarms = new ArrayList<>();
         // Test Values
         alarms.add(new Alarm("7:00 AM", "School", "Mon, Tues", false));
         alarms.add(new Alarm("9:00 PM", "Study", "Mon, Tues, Thurs", true));
@@ -51,9 +52,20 @@ public class MainFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         RecyclerView alarmsRecyclerView = view.findViewById(R.id.alarmsRecyclerView);
+
         alarmsRecyclerView.setLayoutManager(new LinearLayoutManager(requireContext()));
         AlarmAdapter adapter = new AlarmAdapter(alarms);
         alarmsRecyclerView.setAdapter(adapter);
+
+        getParentFragmentManager()
+                .setFragmentResultListener("alarm_request_key", this, (requestKey, bundle) -> {
+                    Alarm alarm = (Alarm) bundle.getSerializable("alarm");
+                    if (alarm != null) {
+                        alarms.add(alarm);
+                        adapter.notifyItemInserted(alarms.size() - 1);
+                    }
+                });
+
         controller = NavHostFragment.findNavController(this);
 
         // TODO: find way to change background based on if alarms are enabled, optional feature tbh
