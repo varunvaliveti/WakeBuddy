@@ -79,13 +79,18 @@ public class AddAlarmFragment extends Fragment {
             int hour = timePicker.getHour();
             int minute = timePicker.getMinute();
 
-            String ampm = hour>12?"AM":"PM";
+            String ampm = hour < 12 ? "AM":"PM";
 
             // TODO: Consider changing this time format when we actually create an alarm for the system
             //also, label seems kind of complicated atp, we can lowk just remove that field lol.
             label = ((EditText) view.findViewById(R.id.alarm_name_entry)).getText().toString();
 
-            String time = String.valueOf(hour>12?hour-12:hour)+":"+String.format("%02d",minute)+" "+ampm;
+            int displayHour = hour > 12 ? hour - 12 : hour;
+            if (displayHour == 0) {
+                displayHour = 12;
+            }
+            String formattedMinute = String.format("%02d", minute);
+            String time = displayHour + ":" + formattedMinute + " " + ampm;
 
             LinearLayout linearLayout = view.findViewById(R.id.linearLayout);
             ArrayList<String> days = new ArrayList<>();
