@@ -27,7 +27,7 @@ import android.widget.Toast;
 import java.util.ArrayList;
 import java.util.Calendar;
 
-public class MainFragment extends Fragment {
+public class MainFragment extends Fragment implements AlarmDeleteListener {
     private static ArrayList<Alarm> alarms;
     private NavController controller;
 
@@ -63,7 +63,7 @@ public class MainFragment extends Fragment {
         RecyclerView alarmsRecyclerView = view.findViewById(R.id.alarmsRecyclerView);
 
         alarmsRecyclerView.setLayoutManager(new LinearLayoutManager(requireContext()));
-        AlarmAdapter adapter = new AlarmAdapter(alarms);
+        AlarmAdapter adapter = new AlarmAdapter(alarms, this);
         alarmsRecyclerView.setAdapter(adapter);
 
         getParentFragmentManager()
@@ -214,6 +214,39 @@ public class MainFragment extends Fragment {
             case "Fri": return Calendar.FRIDAY;
             case "Sat": return Calendar.SATURDAY;
             default: return -1;
+        }
+    }
+
+    @Override
+    public void onAlarmDelete(Alarm alarm) {
+        AlarmManager alarmManager = (AlarmManager) requireContext().getSystemService(Context.ALARM_SERVICE);
+
+        String[] daysArray = alarm.getDays().split(",\\s*");
+        if (alarm.getDays().isEmpty()) {
+            int requestCode = (alarm.getLabel() + "once").hashCode();
+            Intent intent = new Intent(requireContext(), AlarmReceiver.class);
+            PendingIntent pendingIntent = PendingIntent.getBroadcast(
+                    requireContext(), requestCode, intent,
+                    PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE
+            );
+            alarmManager.cancel(pendingIntent);
+        } else {
+            for (String day : daysArray) {
+                int requestCode = (alarm.getLabel() + day).hashCode();
+                Intent intent = new Intent(requireContext(), AlarmReceiver.class);
+                PendingIntent pendingIntent = PendingIntent.getBroadcast(
+                        requireContext(), requestCode, intent,
+                        PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE
+                );
+                alarmManager.cancel(pendingIntent);
+            }
+        }
+
+        int index = alarms.indexOf(alarm);
+        if (index != -1) {
+            alarms.remove(index);
+            RecyclerView recyclerView = requireView().findViewById(R.id.alarmsRecyclerView);
+            ((AlarmAdapter) recyclerView.getAdapter()).notifyItemRemoved(index);
         }
     }
 }
