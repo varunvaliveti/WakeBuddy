@@ -1,5 +1,10 @@
 package edu.sjsu.android.wakebuddy;
 
+import android.app.AlarmManager;
+import android.app.PendingIntent;
+import android.content.Context;
+import android.content.Intent;
+import android.os.Build;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -10,6 +15,8 @@ import androidx.navigation.fragment.NavHostFragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.provider.Settings;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -18,6 +25,7 @@ import android.widget.ImageView;
 import android.widget.Toast;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 
 public class MainFragment extends Fragment {
     private static ArrayList<Alarm> alarms;
@@ -34,11 +42,12 @@ public class MainFragment extends Fragment {
         if (getArguments() != null) {
             // Handle params here
         }
+
         // alarms = new ArrayList<>();
         // Test Values
-        alarms.add(new Alarm("7:00 AM", "School", "Mon, Tues", false));
-        alarms.add(new Alarm("9:00 PM", "Study", "Mon, Tues, Thurs", true));
-        alarms.add(new Alarm("10:00 AM", "Work", "Mon, Fri, Sat", false));
+        alarms.add(new Alarm("7:00 AM", "School","Movement", "Mon, Tues", false));
+        alarms.add(new Alarm("9:00 PM", "Study","Math", "Mon, Tues, Thurs", true));
+        alarms.add(new Alarm("10:00 AM", "Work","Barcode", "Mon, Fri, Sat", false));
     }
 
     @Override
@@ -63,6 +72,10 @@ public class MainFragment extends Fragment {
                     if (alarm != null) {
                         alarms.add(alarm);
                         adapter.notifyItemInserted(alarms.size() - 1);
+
+                        if (alarm.isEnabled()) {
+                            setAndroidAlarm(requireContext(), alarm);
+                        }
                     }
                 });
 
@@ -93,5 +106,114 @@ public class MainFragment extends Fragment {
 
     public void goAddAlarm() {
         controller.navigate(R.id.addAlarmFragment);
+    }
+
+    private void setAndroidAlarm(Context context, Alarm alarm) {
+        AlarmManager alarmManager = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
+        String[] daysArray = alarm.getDays().split(",\\s*");
+        String[] timeParts = alarm.getTime().split(":| ");
+        int hour = Integer.parseInt(timeParts[0]);
+        int minute = Integer.parseInt(timeParts[1]);
+        boolean isPM = timeParts[2].equalsIgnoreCase("PM");
+        if (isPM && hour != 12) hour += 12;
+        if (!isPM && hour == 12) hour = 0;
+
+        if (alarm.getDays().isEmpty()) {
+            // One-time alarm for next available time
+            Calendar calendar = Calendar.getInstance();
+            calendar.set(Calendar.HOUR_OF_DAY, hour);
+            calendar.set(Calendar.MINUTE, minute);
+            calendar.set(Calendar.SECOND, 0);
+            calendar.set(Calendar.MILLISECOND, 0);
+
+            // If the time has already passed today, schedule for tomorrow
+            if (calendar.before(Calendar.getInstance())) {
+                calendar.add(Calendar.DAY_OF_YEAR, 1);
+            }
+
+            Intent intent = new Intent(context, AlarmReceiver.class);
+            intent.putExtra("label", alarm.getLabel());
+            intent.putExtra("task", alarm.getTask());
+            intent.putExtra("time", alarm.getTime());
+
+            int requestCode = (alarm.getLabel() + "once").hashCode();
+            PendingIntent pendingIntent = PendingIntent.getBroadcast(
+                    context,
+                    requestCode,
+                    intent,
+                    PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE
+            );
+
+            alarmManager.setExactAndAllowWhileIdle(
+                    AlarmManager.RTC_WAKEUP,
+                    calendar.getTimeInMillis(),
+                    pendingIntent
+            );
+        }
+        else {
+            // TODO: Recurring alarms still need to be tested
+            for (String day : daysArray) {
+                int dayOfWeek = mapDayToCalendar(day);
+                if (dayOfWeek == -1)
+                    continue;
+
+                Calendar calendar = Calendar.getInstance();
+                calendar.set(Calendar.DAY_OF_WEEK, dayOfWeek);
+                calendar.set(Calendar.HOUR_OF_DAY, hour);
+                calendar.set(Calendar.MINUTE, minute);
+                calendar.set(Calendar.SECOND, 0);
+                calendar.set(Calendar.MILLISECOND, 0);
+
+                // If time is before now, schedule for next week
+                if (calendar.before(Calendar.getInstance())) {
+                    calendar.add(Calendar.WEEK_OF_YEAR, 1);
+                }
+
+                Intent intent = new Intent(context, AlarmReceiver.class);
+                intent.putExtra("label", alarm.getLabel());
+                intent.putExtra("task", alarm.getTask());
+                intent.putExtra("day", dayOfWeek); // Save the scheduled day for rescheduling
+                intent.putExtra("time", alarm.getTime()); // Also needed for rescheduling
+
+                int requestCode = (alarm.getLabel() + day).hashCode(); // unique per label+day
+                PendingIntent pendingIntent = PendingIntent.getBroadcast(
+                        context,
+                        requestCode,
+                        intent,
+                        PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE
+                );
+
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+                    if (!alarmManager.canScheduleExactAlarms()) {
+                        Intent reqSchedIntent = new Intent(Settings.ACTION_REQUEST_SCHEDULE_EXACT_ALARM);
+                        context.startActivity(reqSchedIntent);
+                        return;
+                    }
+                }
+
+                try {
+                    alarmManager.setExactAndAllowWhileIdle(
+                            AlarmManager.RTC_WAKEUP,
+                            calendar.getTimeInMillis(),
+                            pendingIntent
+                    );
+                } catch (SecurityException e) {
+                    Log.e("Alarm", "Exact alarm scheduling not permitted: " + e.getMessage());
+                }
+            }
+        }
+    }
+
+    private int mapDayToCalendar(String day) {
+        switch (day) {
+            case "Sun": return Calendar.SUNDAY;
+            case "Mon": return Calendar.MONDAY;
+            case "Tues": return Calendar.TUESDAY;
+            case "Wed": return Calendar.WEDNESDAY;
+            case "Thurs": return Calendar.THURSDAY;
+            case "Fri": return Calendar.FRIDAY;
+            case "Sat": return Calendar.SATURDAY;
+            default: return -1;
+        }
     }
 }

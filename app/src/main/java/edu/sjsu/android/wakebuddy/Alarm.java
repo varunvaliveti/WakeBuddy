@@ -6,8 +6,17 @@ public class Alarm implements Serializable {
 
         private String time;
         private String label;
+        private String task;
         private String days;
         private boolean isEnabled;
+
+        public String getTask() {
+            return task;
+        }
+
+        public void setTask(String task) {
+            this.task = task;
+        }
 
         public String getTime() {
             return time;
@@ -41,9 +50,10 @@ public class Alarm implements Serializable {
             isEnabled = enabled;
         }
 
-        public Alarm(String time, String label, String days, boolean isEnabled) {
+        public Alarm(String time, String label,String task, String days, boolean isEnabled) {
             this.time = time;
             this.label = label;
+            this.task = task;
             this.days = days;
             this.isEnabled = isEnabled;
         }
