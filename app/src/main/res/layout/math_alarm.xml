@@ -1,14 +1,81 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".math_alarm">
+    android:orientation="vertical"
+    android:gravity="center_horizontal"
+    android:padding="16dp"
+    android:background="@drawable/sky">
 
-    <!-- TODO: Update blank fragment layout -->
+    <!-- Question -->
     <TextView
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:text="@string/fragment_for_setting_math_alarm" />
+        android:id="@+id/questionText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="What is 5 + 3?"
+        android:textSize="24sp"
+        android:textStyle="bold"
+        android:textColor="@color/white"
+        android:layout_marginTop="32dp"
+        android:layout_marginBottom="16dp"/>
 
-</FrameLayout>
+    <!-- Eagle stays below question -->
+    <ImageView
+        android:id="@+id/eagleImg"
+        android:layout_width="150dp"
+        android:layout_height="150dp"
+        android:layout_marginBottom="20dp"
+        android:scaleType="fitCenter"
+        android:src="@drawable/eagle"
+        android:contentDescription="@null"
+        />
+
+    <!-- Balloons -->
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1">
+
+        <!-- Balloon 1 -->
+        <Button
+            android:id="@+id/balloon1"
+            android:layout_width="100dp"
+            android:layout_height="100dp"
+            android:layout_gravity="start|top"
+            android:text="8"
+            android:backgroundTint="#FF6F61"
+            android:textColor="#FFFFFF" />
+
+        <!-- Balloon 2 -->
+        <Button
+            android:id="@+id/balloon2"
+            android:layout_width="100dp"
+            android:layout_height="100dp"
+            android:layout_gravity="end|top"
+            android:text="10"
+            android:backgroundTint="#6BCB77"
+            android:textColor="#FFFFFF" />
+
+        <!-- Balloon 3 -->
+        <Button
+            android:id="@+id/balloon3"
+            android:layout_width="100dp"
+            android:layout_height="100dp"
+            android:layout_gravity="start|bottom"
+            android:text="6"
+            android:backgroundTint="#4D96FF"
+            android:textColor="#FFFFFF" />
+
+        <!-- Balloon 4 -->
+        <Button
+            android:id="@+id/balloon4"
+            android:layout_width="100dp"
+            android:layout_height="100dp"
+            android:layout_gravity="end|bottom"
+            android:text="9"
+            android:backgroundTint="#FFD93D"
+            android:textColor="#FFFFFF"
+            android:layout_marginBottom="40dp" />
+    </FrameLayout>
+</LinearLayout>

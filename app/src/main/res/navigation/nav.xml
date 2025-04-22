@@ -3,7 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/nav"
-    app:startDestination="@id/welcomeFragment">
+    app:startDestination="@id/math_alarm">
 
     <fragment
         android:id="@+id/welcomeFragment"
@@ -31,4 +31,8 @@
         android:name="edu.sjsu.android.wakebuddy.AddAlarmFragment"
         android:label="fragment_add_alarm"
         tools:layout="@layout/fragment_add_alarm" />
+    <fragment
+        android:id="@+id/math_alarm"
+        android:name="edu.sjsu.android.wakebuddy.math_alarm"
+        android:label="math_alarm" />
 </navigation>
