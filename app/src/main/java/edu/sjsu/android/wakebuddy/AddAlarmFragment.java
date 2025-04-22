@@ -2,14 +2,27 @@ package edu.sjsu.android.wakebuddy;
 
 import android.os.Bundle;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.navigation.NavController;
+import androidx.navigation.fragment.NavHostFragment;
 
+import android.text.TextUtils;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.CheckBox;
+import android.widget.EditText;
+import android.widget.LinearLayout;
+import android.widget.RadioGroup;
+import android.widget.TimePicker;
+
+import java.util.ArrayList;
 
 public class AddAlarmFragment extends Fragment {
-
+    private NavController controller;
 
     public AddAlarmFragment() {
         // Required empty public constructor
@@ -27,7 +40,79 @@ public class AddAlarmFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+        // Log.d("", "clicked add");
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_add_alarm, container, false);
+        View view = inflater.inflate(R.layout.fragment_add_alarm, container, false);
+        RadioGroup radioGroup = view.findViewById(R.id.radioGroup);
+
+        // Set the default checked RadioButton
+        radioGroup.check(R.id.movementButton);
+
+        return view;
+    }
+
+    @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+        controller = NavHostFragment.findNavController(this);
+        view.findViewById(R.id.add_cancel_btn).setOnClickListener(v -> {
+            goMain();
+        });
+        view.findViewById(R.id.add_confirm_btn).setOnClickListener(v -> {
+            RadioGroup radioGroup = view.findViewById(R.id.radioGroup);
+            int checkedID = radioGroup.getCheckedRadioButtonId();
+            String label;
+            String task;
+
+            if(checkedID == R.id.movementButton) task = "Movement";
+            else if (checkedID == R.id.yellingButton) task = "Yelling";
+            else if (checkedID == R.id.mathButton) task = "Math";
+            else if (checkedID == R.id.barcodeButton) task = "Barcode";
+            else task = "None"; // Maybe handle this no task with its own screen, but task should never be null anyways so idk
+
+            Log.d("", "yeah clicked confirm " + task);
+            TimePicker timePicker = view.findViewById(R.id.timePicker);
+            int hour = timePicker.getHour();
+            int minute = timePicker.getMinute();
+
+            label = ((EditText) view.findViewById(R.id.alarm_name_entry)).getText().toString();
+
+            String ampm = hour < 12 ? "AM":"PM";
+            int displayHour = hour > 12 ? hour - 12 : hour;
+            if (displayHour == 0) {
+                displayHour = 12;
+            }
+            String formattedMinute = String.format("%02d", minute);
+            String time = displayHour + ":" + formattedMinute + " " + ampm;
+
+            LinearLayout linearLayout = view.findViewById(R.id.linearLayout);
+            ArrayList<String> days = new ArrayList<>();
+            for (int i = 0; i < linearLayout.getChildCount(); i++) {
+                View child = linearLayout.getChildAt(i);
+                if (child instanceof CheckBox) {
+                    CheckBox checkBox = (CheckBox) child;
+                    if (checkBox.isChecked()) {
+                        days.add(checkBox.getText().toString());
+                    }
+                }
+            }
+
+            String theDays = TextUtils.join(", ",days);
+
+           Alarm newAlarm = new Alarm(time, label, task, theDays, true);
+
+           Bundle result = new Bundle();
+           result.putSerializable("alarm", newAlarm);
+           result.putString("task", task);
+           getParentFragmentManager().setFragmentResult("alarm_request_key", result);
+
+            Log.d("", "time picker is "+ timePicker.getHour() + " : "+timePicker.getMinute()+" "+ampm);
+            goMain();
+        });
+    }
+
+    public void goMain() {
+        controller.popBackStack();
+        // controller.navigate(R.id.mainFragment);
     }
 }
