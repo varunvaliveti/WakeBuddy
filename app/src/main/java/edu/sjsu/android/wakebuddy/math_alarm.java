@@ -1,4 +1,6 @@
 package edu.sjsu.android.wakebuddy;
+import android.content.Context;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import androidx.fragment.app.Fragment;
 import android.view.LayoutInflater;
@@ -85,28 +87,37 @@ public class math_alarm extends Fragment {
             balloons[i].setOnClickListener(v -> {
                 if (selected == correctAnswer) {
                     // TODO: Stop alarm service or media player here
-                    Toast.makeText(getContext(), "Correct! Alarm stopped!", Toast.LENGTH_SHORT).show();
-                    requireActivity().finish(); // or navController.popBackStack() if you're using Navigation
+                    Toast.makeText(getContext(), "Have a Great Day!", Toast.LENGTH_SHORT).show();
+
+                    //Keep Track of Successes
+                    SharedPreferences prefs = requireActivity().getSharedPreferences("WakeBuddyPrefs", Context.MODE_PRIVATE);
+                    int count = prefs.getInt("successfulWakeups", 0);
+                    prefs.edit().putInt("successfulWakeups", count + 1).apply();
+
+                    //Finish Alarm
+                    requireActivity().finish(); //
                 } else {
                     Toast.makeText(getContext(), "Wrong answer!", Toast.LENGTH_SHORT).show();
                 }
             });
         }
-        /*
+
         floatBalloonDrifty(balloons[0], 0);
         floatBalloonDrifty(balloons[1], 200);
         floatBalloonDrifty(balloons[2], 400);
         floatBalloonDrifty(balloons[3], 600);
 
+        /*
         floatAround(balloons[0], 0f, 0f, 0);
         floatAround(balloons[1], 50f, 0f, 300);
         floatAround(balloons[2], -50f, 0f, 600);
         floatAround(balloons[3], 0f, 100f, 900);
-        */
+
         loopBounce(balloons[0], 100f, 1500);
         loopBounce(balloons[1], 120f, 1800);
         loopBounce(balloons[2], 90f, 1700);
         loopBounce(balloons[3], 110f, 1600);
+        */
 
         return view;
     }
@@ -123,7 +134,7 @@ public class math_alarm extends Fragment {
                 ).start();
     }
 
-    /*
+
     private void floatBalloon(View balloon, long delay) {
         TranslateAnimation anim = new TranslateAnimation(
                 0, 0,    // X from/to
@@ -141,7 +152,9 @@ public class math_alarm extends Fragment {
         AnimationSet set = new AnimationSet(true);
 
         // Vertical Bounce
-        TranslateAnimation upDown = new TranslateAnimation(0, 0, 0, -150);
+        //TranslateAnimation upDown = new TranslateAnimation(0, 0, 0, -150);
+        //TranslateAnimation upDown = new TranslateAnimation(0, 0, 0, -80);
+        TranslateAnimation upDown = new TranslateAnimation(0, 0, 0, -50);
         upDown.setDuration(1500);
         upDown.setRepeatMode(Animation.REVERSE);
         upDown.setRepeatCount(Animation.INFINITE);
@@ -149,7 +162,8 @@ public class math_alarm extends Fragment {
         upDown.setInterpolator(new BounceInterpolator());
 
         // Horizontal Sway
-        TranslateAnimation sideToSide = new TranslateAnimation(-30, 30, 0, 0);
+        //TranslateAnimation sideToSide = new TranslateAnimation(-30, 30, 0, 0);
+        TranslateAnimation sideToSide = new TranslateAnimation(-20, 20, 0, 0);
         sideToSide.setDuration(2000);
         sideToSide.setRepeatMode(Animation.REVERSE);
         sideToSide.setRepeatCount(Animation.INFINITE);
@@ -183,5 +197,4 @@ public class math_alarm extends Fragment {
         set.setStartDelay(delay);
         set.start();
     }
-    */
 }

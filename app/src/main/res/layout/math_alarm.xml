@@ -1,12 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
+<androidx.constraintlayout.widget.ConstraintLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
-    android:gravity="center_horizontal"
+    android:background="@drawable/sky"
     android:padding="16dp"
-    android:background="@drawable/sky">
+    android:clipChildren="true"
+    android:clipToPadding="true">
 
     <!-- Question -->
     <TextView
@@ -17,65 +18,83 @@
         android:textSize="24sp"
         android:textStyle="bold"
         android:textColor="@color/white"
-        android:layout_marginTop="32dp"
-        android:layout_marginBottom="16dp"/>
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_marginTop="32dp"/>
 
-    <!-- Eagle stays below question -->
+    <!-- Eagle Image -->
     <ImageView
         android:id="@+id/eagleImg"
         android:layout_width="150dp"
         android:layout_height="150dp"
-        android:layout_marginBottom="20dp"
+        android:layout_marginTop="20dp"
         android:scaleType="fitCenter"
         android:src="@drawable/eagle"
-        android:contentDescription="@null"
-        />
+        app:layout_constraintTop_toBottomOf="@id/questionText"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"/>
 
-    <!-- Balloons -->
-    <FrameLayout
-        android:layout_width="match_parent"
+    <!-- Balloon container -->
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/balloonContainer"
+        android:layout_width="0dp"
         android:layout_height="0dp"
-        android:layout_weight="1">
+        android:clipChildren="true"
+        android:clipToPadding="true"
+        app:layout_constraintTop_toBottomOf="@id/eagleImg"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent">
 
         <!-- Balloon 1 -->
         <Button
             android:id="@+id/balloon1"
             android:layout_width="100dp"
             android:layout_height="100dp"
-            android:layout_gravity="start|top"
             android:text="8"
             android:backgroundTint="#FF6F61"
-            android:textColor="#FFFFFF" />
+            android:textColor="#FFFFFF"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            android:layout_margin="16dp"/>
 
         <!-- Balloon 2 -->
         <Button
             android:id="@+id/balloon2"
             android:layout_width="100dp"
             android:layout_height="100dp"
-            android:layout_gravity="end|top"
             android:text="10"
             android:backgroundTint="#6BCB77"
-            android:textColor="#FFFFFF" />
+            android:textColor="#FFFFFF"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            android:layout_margin="16dp"/>
 
         <!-- Balloon 3 -->
         <Button
             android:id="@+id/balloon3"
             android:layout_width="100dp"
             android:layout_height="100dp"
-            android:layout_gravity="start|bottom"
             android:text="6"
             android:backgroundTint="#4D96FF"
-            android:textColor="#FFFFFF" />
+            android:textColor="#FFFFFF"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            android:layout_margin="16dp"/>
 
         <!-- Balloon 4 -->
         <Button
             android:id="@+id/balloon4"
             android:layout_width="100dp"
             android:layout_height="100dp"
-            android:layout_gravity="end|bottom"
             android:text="9"
             android:backgroundTint="#FFD93D"
             android:textColor="#FFFFFF"
-            android:layout_marginBottom="40dp" />
-    </FrameLayout>
-</LinearLayout>
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            android:layout_margin="16dp"/>
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</androidx.constraintlayout.widget.ConstraintLayout>
+

@@ -4,6 +4,7 @@ import android.app.AlarmManager;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Build;
 import android.os.Bundle;
 
@@ -22,6 +23,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import java.util.ArrayList;
@@ -81,9 +83,29 @@ public class MainFragment extends Fragment implements AlarmDeleteListener {
 
         controller = NavHostFragment.findNavController(this);
 
+        TextView wakeupCounterText = view.findViewById(R.id.wakeupCounterText);
+        SharedPreferences prefs = requireActivity().getSharedPreferences("WakeBuddyPrefs", Context.MODE_PRIVATE);
+        int count = prefs.getInt("successfulWakeups", 0);
+        wakeupCounterText.setText("Wakeups: " + count);
+
         // TODO: find way to change background based on if alarms are enabled, optional feature tbh
+        //ImageView background = view.findViewById(R.id.backgroundImg);
+        //background.setImageResource(R.drawable.sky);
         ImageView background = view.findViewById(R.id.backgroundImg);
-        background.setImageResource(R.drawable.sky);
+
+        boolean hasEnabledAlarms = false;
+        for (Alarm alarm : alarms) {
+            if (alarm.isEnabled()) {
+                hasEnabledAlarms = true;
+                break;
+            }
+        }
+
+        if (hasEnabledAlarms) {
+            background.setImageResource(R.drawable.sky); // active alarms = daytime
+        } else {
+            background.setImageResource(R.drawable.night); // no alarms = sleepy mode
+        }
 
         ImageButton addAlarmBtn = view.findViewById(R.id.addAlarmButton);
         addAlarmBtn.setOnClickListener(v -> {
