@@ -1,8 +1,6 @@
 package edu.sjsu.android.wakebuddy;
 
 import android.app.AlertDialog;
-import android.content.Context;
-import android.content.SharedPreferences;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -14,7 +12,6 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.material.switchmaterial.SwitchMaterial;
-import com.google.gson.Gson;
 
 import java.util.List;
 
@@ -62,8 +59,14 @@ public class AlarmAdapter extends RecyclerView.Adapter<AlarmAdapter.AlarmViewHol
         holder.alarmSwitch.setChecked(currAlarm.isEnabled());
 
         holder.alarmSwitch.setOnCheckedChangeListener((buttonView, isChecked) -> {
-            // TODO: handle alarm canceling when switch is turned off
             currAlarm.setEnabled(isChecked);
+
+            if (isChecked) {
+                AlarmUtils.setAlarm(holder.itemView.getContext(), currAlarm);
+            } else {
+                AlarmUtils.cancelAlarm(holder.itemView.getContext(), currAlarm);
+            }
+
             if (changeListener != null) {
                 changeListener.onAlarmChange();
             }

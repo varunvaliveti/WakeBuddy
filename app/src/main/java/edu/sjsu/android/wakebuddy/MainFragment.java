@@ -1,11 +1,7 @@
 package edu.sjsu.android.wakebuddy;
 
-import android.app.AlarmManager;
-import android.app.PendingIntent;
 import android.content.Context;
-import android.content.Intent;
 import android.content.SharedPreferences;
-import android.os.Build;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -16,8 +12,6 @@ import androidx.navigation.fragment.NavHostFragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import android.provider.Settings;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -148,28 +142,7 @@ public class MainFragment extends Fragment implements AlarmDeleteListener, Alarm
 
     @Override
     public void onAlarmDelete(Alarm alarm) {
-        AlarmManager alarmManager = (AlarmManager) requireContext().getSystemService(Context.ALARM_SERVICE);
-
-        String[] daysArray = alarm.getDays().split(",\\s*");
-        if (alarm.getDays().isEmpty()) {
-            int requestCode = (alarm.getLabel() + "once").hashCode();
-            Intent intent = new Intent(requireContext(), AlarmReceiver.class);
-            PendingIntent pendingIntent = PendingIntent.getBroadcast(
-                    requireContext(), requestCode, intent,
-                    PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE
-            );
-            alarmManager.cancel(pendingIntent);
-        } else {
-            for (String day : daysArray) {
-                int requestCode = (alarm.getLabel() + day).hashCode();
-                Intent intent = new Intent(requireContext(), AlarmReceiver.class);
-                PendingIntent pendingIntent = PendingIntent.getBroadcast(
-                        requireContext(), requestCode, intent,
-                        PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE
-                );
-                alarmManager.cancel(pendingIntent);
-            }
-        }
+        AlarmUtils.cancelAlarm(requireContext(), alarm);
 
         int index = alarms.indexOf(alarm);
         if (index != -1) {

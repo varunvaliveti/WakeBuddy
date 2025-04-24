@@ -11,6 +11,30 @@ import android.util.Log;
 import java.util.Calendar;
 
 public class AlarmUtils {
+    public static void cancelAlarm(Context context, Alarm alarm) {
+        AlarmManager alarmManager = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
+        String[] daysArray = alarm.getDays().split(",\\s*");
+
+        if (alarm.getDays().isEmpty()) {
+            int requestCode = (alarm.getLabel() + "once").hashCode();
+            Intent intent = new Intent(context, AlarmReceiver.class);
+            PendingIntent pendingIntent = PendingIntent.getBroadcast(
+                    context, requestCode, intent,
+                    PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE
+            );
+            alarmManager.cancel(pendingIntent);
+        } else {
+            for (String day : daysArray) {
+                int requestCode = (alarm.getLabel() + day).hashCode();
+                Intent intent = new Intent(context, AlarmReceiver.class);
+                PendingIntent pendingIntent = PendingIntent.getBroadcast(
+                        context, requestCode, intent,
+                        PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE
+                );
+                alarmManager.cancel(pendingIntent);
+            }
+        }
+    }
 
     public static void setAlarm(Context context, Alarm alarm) {
         AlarmManager alarmManager = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
