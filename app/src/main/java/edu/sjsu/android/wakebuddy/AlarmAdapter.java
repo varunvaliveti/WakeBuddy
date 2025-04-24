@@ -1,6 +1,8 @@
 package edu.sjsu.android.wakebuddy;
 
 import android.app.AlertDialog;
+import android.content.Context;
+import android.content.SharedPreferences;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -12,16 +14,19 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.material.switchmaterial.SwitchMaterial;
+import com.google.gson.Gson;
 
 import java.util.List;
 
 public class AlarmAdapter extends RecyclerView.Adapter<AlarmAdapter.AlarmViewHolder> {
     private List<Alarm> alarmList;
     private AlarmDeleteListener deleteListener;
+    private AlarmChangeListener changeListener;
 
-    public AlarmAdapter(List<Alarm> alarmList, AlarmDeleteListener deleteListener) {
+    public AlarmAdapter(List<Alarm> alarmList, AlarmDeleteListener deleteListener, AlarmChangeListener changeListener) {
         this.alarmList = alarmList;
         this.deleteListener = deleteListener;
+        this.changeListener = changeListener;
     }
 
     public static class AlarmViewHolder extends RecyclerView.ViewHolder {
@@ -57,8 +62,11 @@ public class AlarmAdapter extends RecyclerView.Adapter<AlarmAdapter.AlarmViewHol
         holder.alarmSwitch.setChecked(currAlarm.isEnabled());
 
         holder.alarmSwitch.setOnCheckedChangeListener((buttonView, isChecked) -> {
+            // TODO: handle alarm canceling when switch is turned off
             currAlarm.setEnabled(isChecked);
-            // todo: potentially handle other data changes
+            if (changeListener != null) {
+                changeListener.onAlarmChange();
+            }
         });
 
         holder.deleteAlarmButton.setOnClickListener(v -> {
