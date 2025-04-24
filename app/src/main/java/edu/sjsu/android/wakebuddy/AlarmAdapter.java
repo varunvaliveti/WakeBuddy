@@ -18,10 +18,12 @@ import java.util.List;
 public class AlarmAdapter extends RecyclerView.Adapter<AlarmAdapter.AlarmViewHolder> {
     private List<Alarm> alarmList;
     private AlarmDeleteListener deleteListener;
+    private AlarmChangeListener changeListener;
 
-    public AlarmAdapter(List<Alarm> alarmList, AlarmDeleteListener deleteListener) {
+    public AlarmAdapter(List<Alarm> alarmList, AlarmDeleteListener deleteListener, AlarmChangeListener changeListener) {
         this.alarmList = alarmList;
         this.deleteListener = deleteListener;
+        this.changeListener = changeListener;
     }
 
     public static class AlarmViewHolder extends RecyclerView.ViewHolder {
@@ -58,7 +60,16 @@ public class AlarmAdapter extends RecyclerView.Adapter<AlarmAdapter.AlarmViewHol
 
         holder.alarmSwitch.setOnCheckedChangeListener((buttonView, isChecked) -> {
             currAlarm.setEnabled(isChecked);
-            // todo: potentially handle other data changes
+
+            if (isChecked) {
+                AlarmUtils.setAlarm(holder.itemView.getContext(), currAlarm);
+            } else {
+                AlarmUtils.cancelAlarm(holder.itemView.getContext(), currAlarm);
+            }
+
+            if (changeListener != null) {
+                changeListener.onAlarmChange();
+            }
         });
 
         holder.deleteAlarmButton.setOnClickListener(v -> {
