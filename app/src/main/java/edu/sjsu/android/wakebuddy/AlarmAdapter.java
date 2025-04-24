@@ -1,6 +1,7 @@
 package edu.sjsu.android.wakebuddy;
 
 import android.app.AlertDialog;
+import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -9,6 +10,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.navigation.Navigation;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.material.switchmaterial.SwitchMaterial;
@@ -32,6 +34,8 @@ public class AlarmAdapter extends RecyclerView.Adapter<AlarmAdapter.AlarmViewHol
         public TextView alarmDaysTextView;
         public SwitchMaterial alarmSwitch;
         public ImageView deleteAlarmButton;
+        public ImageView editAlarmButton;
+
 
         public AlarmViewHolder(View itemView) {
             super(itemView);
@@ -40,6 +44,7 @@ public class AlarmAdapter extends RecyclerView.Adapter<AlarmAdapter.AlarmViewHol
             alarmDaysTextView = itemView.findViewById(R.id.alarmDays);
             alarmSwitch = itemView.findViewById(R.id.alarmSwitch);
             deleteAlarmButton = itemView.findViewById(R.id.deleteAlarmButton);
+            editAlarmButton = itemView.findViewById(R.id.editAlarmButton);
         }
     }
 
@@ -82,6 +87,14 @@ public class AlarmAdapter extends RecyclerView.Adapter<AlarmAdapter.AlarmViewHol
                     .setNegativeButton("No", null)
                     .show();
         });
+
+        holder.editAlarmButton.setOnClickListener(v -> {
+            Bundle result = new Bundle();
+            result.putSerializable("edit_alarm", currAlarm);
+            result.putInt("edit_index", holder.getAdapterPosition());
+            Navigation.findNavController(v).navigate(R.id.addAlarmFragment, result);
+        });
+
     }
 
     @Override

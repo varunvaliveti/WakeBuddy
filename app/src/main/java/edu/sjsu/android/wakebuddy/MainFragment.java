@@ -59,15 +59,25 @@ public class MainFragment extends Fragment implements AlarmDeleteListener, Alarm
 
         getParentFragmentManager()
                 .setFragmentResultListener("alarm_request_key", this, (requestKey, bundle) -> {
+                    int editIndex = bundle.getInt("edit_index", -1);
                     Alarm alarm = (Alarm) bundle.getSerializable("alarm");
+
                     if (alarm != null) {
-                        alarms.add(alarm);
-                        adapter.notifyItemInserted(alarms.size() - 1);
-                        saveAlarmsToStorage();
+                        if (editIndex != -1) {
+                            Alarm oldAlarm = alarms.get(editIndex);
+                            AlarmUtils.cancelAlarm(requireContext(), oldAlarm); // cancel old
+                            alarms.set(editIndex, alarm);
+                            adapter.notifyItemChanged(editIndex);
+                        } else {
+                            alarms.add(alarm);
+                            adapter.notifyItemInserted(alarms.size() - 1);
+                        }
 
                         if (alarm.isEnabled()) {
                             AlarmUtils.setAlarm(requireContext(), alarm);
                         }
+
+                        saveAlarmsToStorage();
                     }
                 });
 
@@ -78,7 +88,6 @@ public class MainFragment extends Fragment implements AlarmDeleteListener, Alarm
         int count = prefs.getInt("successfulWakeups", 0);
         wakeupCounterText.setText("Wakeups: " + count);
 
-        // TODO: find way to change background based on if alarms are enabled, optional feature tbh
         //ImageView background = view.findViewById(R.id.backgroundImg);
         //background.setImageResource(R.drawable.sky);
         ImageView background = view.findViewById(R.id.backgroundImg);
