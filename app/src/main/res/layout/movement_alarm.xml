@@ -1,40 +1,54 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/alarmLayout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:padding="32dp">
+    android:padding="32dp"
+    android:background="@drawable/sky">
 
     <TextView
         android:id="@+id/movementAlarmText"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Placeholder Alarm Screen"
-        android:textSize="32sp"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="64dp"
+        android:text="Wake up!"
+        android:textColor="@color/white"
+        android:textSize="28sp"
         android:textStyle="bold"
-        android:layout_centerHorizontal="true"
-        android:layout_marginBottom="32dp"
-        android:layout_centerVertical="true"
-        android:gravity="center"/>
-
-    <Button
-        android:id="@+id/stopAlarmButtonMovement"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Stop Alarm"
-        android:textSize="18sp"
-        android:padding="16dp"
-        android:layout_below="@id/movementAlarmText"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="48dp" />
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
-        android:id="@+id/textView2"
+        android:id="@+id/movementStatusText"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignParentStart="true"
-        android:layout_alignParentTop="true"
-        android:layout_marginStart="32dp"
+        android:layout_below="@id/movementAlarmText"
+        android:layout_centerHorizontal="true"
         android:layout_marginTop="32dp"
-        android:text="Movement" />
-</RelativeLayout>
+        android:text="Start moving!"
+        android:textColor="#FF5722"
+        android:textSize="20sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/movementAlarmText" />
+
+    <ProgressBar
+        android:id="@+id/movementProgressBar"
+        style="?android:attr/progressBarStyleHorizontal"
+        android:layout_width="250dp"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/movementStatusText"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="64dp"
+        android:backgroundTint="#BDBDBD"
+        android:max="100"
+        android:progress="0"
+        android:progressTint="@color/lime"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/movementStatusText" />
+</androidx.constraintlayout.widget.ConstraintLayout>
