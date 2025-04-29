@@ -26,13 +26,21 @@
             android:id="@+id/action_mainFragment_to_addAlarmFragment"
             app:destination="@id/addAlarmFragment" />
     </fragment>
+
     <fragment
         android:id="@+id/addAlarmFragment"
         android:name="edu.sjsu.android.wakebuddy.AddAlarmFragment"
         android:label="fragment_add_alarm"
         tools:layout="@layout/fragment_add_alarm" />
+
     <fragment
         android:id="@+id/math_alarm"
         android:name="edu.sjsu.android.wakebuddy.math_alarm"
         android:label="math_alarm" />
+
+    <fragment
+        android:id="@+id/settingsFragment"
+        android:name="edu.sjsu.android.wakebuddy.SettingsFragment"
+        android:label="Settings"
+        tools:layout="@layout/fragment_settings" />
 </navigation>
