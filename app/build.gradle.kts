@@ -31,6 +31,8 @@ android {
     }
 }
 
+
+
 dependencies {
 
     implementation(libs.appcompat)
@@ -42,4 +44,9 @@ dependencies {
     testImplementation(libs.junit)
     androidTestImplementation(libs.ext.junit)
     androidTestImplementation(libs.espresso.core)
+    implementation(libs.gson)
+    implementation(libs.core.splashscreen)
+    implementation("com.journeyapps:zxing-android-embedded:4.3.0")
 }
+
+

@@ -58,6 +58,24 @@ public class Alarm implements Serializable {
             this.isEnabled = isEnabled;
         }
 
+        @Override
+        public boolean equals(Object o) {
+            if (this == o) return true;
+            if (o == null || getClass() != o.getClass()) return false;
+            Alarm alarm = (Alarm) o;
+            return time.equals(alarm.time) &&
+                    label.equals(alarm.label) &&
+                    task.equals(alarm.task) &&
+                    days.equals(alarm.days);
+        }
 
-    }
+        @Override
+        public int hashCode() {
+            int res = time.hashCode();
+            res = 31 * res + label.hashCode();
+            res = 31 * res + task.hashCode();
+            res = 31 * res + days.hashCode();
+            return res;
+        }
+}
 

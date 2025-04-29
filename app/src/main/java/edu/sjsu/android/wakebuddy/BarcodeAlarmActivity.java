@@ -4,29 +4,63 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.widget.Button;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import androidx.activity.result.ActivityResultLauncher;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.journeyapps.barcodescanner.ScanContract;
+import com.journeyapps.barcodescanner.ScanOptions;
+
 public class BarcodeAlarmActivity extends AppCompatActivity {
+    private ActivityResultLauncher<ScanOptions> barcodeLauncher;
+    private static final String CORRECT = "1234";
     @Override
-    protected void onCreate(@Nullable Bundle savedInstanceState) {
+    protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.barcode_alarm);
 
-        String label = getIntent().getStringExtra("label");
-        TextView alarmLabel = findViewById(R.id.barcodeAlarmText);
-        alarmLabel.setText(label);
+        // 1) register the scan‐contract
+        barcodeLauncher = registerForActivityResult(
+                new ScanContract(),
+                result -> {
+                    String contents = result.getContents();
+                    if (contents == null) {
+                        Toast.makeText(BarcodeAlarmActivity.this,
+                                "Scan cancelled. Please try again.",
+                                Toast.LENGTH_SHORT).show();
 
-        Button stopAlarmButton = findViewById(R.id.stopAlarmButtonBarcode);
-        stopAlarmButton.setOnClickListener(v -> {
-            // The following 3 lines are to stop the foreground service and finish the activity
-            // It doesn't have to be with a button, you can add it to any logic you want
-            Intent stopServiceIntent = new Intent(this, AlarmService.class);
-            stopService(stopServiceIntent);
-            finish();
-        });
+                        // re-launch if you want
+                        barcodeLauncher.launch(new ScanOptions().setPrompt("Scan barcode to stop alarm"));
+                    }
+                    else if (CORRECT.equals(contents)) {
+                        // correct! stop the alarm
+                        stopService(new Intent(BarcodeAlarmActivity.this, AlarmService.class));
+                        finish();
+                    }
+                    else {
+                        Toast.makeText(BarcodeAlarmActivity.this,
+                                "Wrong code. Try again.",
+                                Toast.LENGTH_SHORT).show();
+                        barcodeLauncher.launch(new ScanOptions().setPrompt("Scan barcode to stop alarm"));
+                    }
+                }
+        );
+
+        // 2) launch the scanner right away
+        barcodeLauncher.launch(
+                new ScanOptions()
+                        .setDesiredBarcodeFormats(ScanOptions.ALL_CODE_TYPES)
+                        .setPrompt("Scan barcode to stop alarm")
+                        .setBeepEnabled(true)
+        );
     }
+
+    // Register the launcher and result handler
+
+
+
 
     @Override
     protected void onUserLeaveHint() {
@@ -43,3 +77,4 @@ public class BarcodeAlarmActivity extends AppCompatActivity {
         // to do anything when back is pressed
     }
 }
+

@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <style name="SplashTheme" parent="Theme.SplashScreen">
+        <item name="android:windowSplashScreenAnimatedIcon">@null</item> <!-- 👈 THIS kills the Android icon -->
+        <item name="android:windowSplashScreenBackground">@color/sky_blue</item>
+        <item name="android:windowBackground">@drawable/splash_background</item>
+    </style>
+</resources>

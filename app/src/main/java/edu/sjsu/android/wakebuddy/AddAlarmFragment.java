@@ -55,9 +55,55 @@ public class AddAlarmFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         controller = NavHostFragment.findNavController(this);
+        Alarm editingAlarm = null;
+        int editingIndex;
+
+        // Check if this is an edit operation
+        if (getArguments() != null && getArguments().containsKey("edit_alarm")) {
+            editingAlarm = (Alarm) getArguments().getSerializable("edit_alarm");
+            editingIndex = getArguments().getInt("edit_index");
+
+            ((EditText) view.findViewById(R.id.alarm_name_entry)).setText(editingAlarm.getLabel());
+
+            String[] timeParts = editingAlarm.getTime().split(":| ");
+            int hour = Integer.parseInt(timeParts[0]);
+            int minute = Integer.parseInt(timeParts[1]);
+            boolean isPM = timeParts[2].equalsIgnoreCase("PM");
+            if (isPM && hour != 12) hour += 12;
+            if (!isPM && hour == 12) hour = 0;
+
+            TimePicker timePicker = view.findViewById(R.id.timePicker);
+            timePicker.setHour(hour);
+            timePicker.setMinute(minute);
+
+            String task = editingAlarm.getTask();
+            RadioGroup radioGroup = view.findViewById(R.id.radioGroup);
+            if (task.equals("Movement")) radioGroup.check(R.id.movementButton);
+            else if (task.equals("Yelling")) radioGroup.check(R.id.yellingButton);
+            else if (task.equals("Math")) radioGroup.check(R.id.mathButton);
+            else if (task.equals("Barcode")) radioGroup.check(R.id.barcodeButton);
+
+            String[] selectedDays = editingAlarm.getDays().split(",\\s*");
+            LinearLayout linearLayout = view.findViewById(R.id.linearLayout);
+            for (int i = 0; i < linearLayout.getChildCount(); i++) {
+                View child = linearLayout.getChildAt(i);
+                if (child instanceof CheckBox) {
+                    CheckBox cb = (CheckBox) child;
+                    for (String day : selectedDays) {
+                        if (cb.getText().toString().equalsIgnoreCase(day)) {
+                            cb.setChecked(true);
+                        }
+                    }
+                }
+            }
+        } else {
+            editingIndex = -1;
+        }
+
         view.findViewById(R.id.add_cancel_btn).setOnClickListener(v -> {
             goMain();
         });
+
         view.findViewById(R.id.add_confirm_btn).setOnClickListener(v -> {
             RadioGroup radioGroup = view.findViewById(R.id.radioGroup);
             int checkedID = radioGroup.getCheckedRadioButtonId();
@@ -99,12 +145,13 @@ public class AddAlarmFragment extends Fragment {
 
             String theDays = TextUtils.join(", ",days);
 
-           Alarm newAlarm = new Alarm(time, label, task, theDays, true);
+            Alarm newAlarm = new Alarm(time, label, task, theDays, true);
 
-           Bundle result = new Bundle();
-           result.putSerializable("alarm", newAlarm);
-           result.putString("task", task);
-           getParentFragmentManager().setFragmentResult("alarm_request_key", result);
+            Bundle result = new Bundle();
+            result.putSerializable("alarm", newAlarm);
+            result.putString("task", task);
+            result.putInt("edit_index", editingIndex);
+            getParentFragmentManager().setFragmentResult("alarm_request_key", result);
 
             Log.d("", "time picker is "+ timePicker.getHour() + " : "+timePicker.getMinute()+" "+ampm);
             goMain();

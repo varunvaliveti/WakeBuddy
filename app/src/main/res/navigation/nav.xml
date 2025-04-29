@@ -3,7 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/nav"
-    app:startDestination="@id/welcomeFragment">
+    app:startDestination="@id/mainFragment">
 
     <fragment
         android:id="@+id/welcomeFragment"
@@ -12,7 +12,9 @@
         tools:layout="@layout/fragment_welcome" >
         <action
             android:id="@+id/action_welcomeFragment_to_mainFragment"
-            app:destination="@id/mainFragment" />
+            app:destination="@id/mainFragment"
+            app:popUpTo="@id/welcomeFragment"
+            app:popUpToInclusive="true"/>
     </fragment>
 
     <fragment
@@ -28,9 +30,9 @@
         android:id="@+id/addAlarmFragment"
         android:name="edu.sjsu.android.wakebuddy.AddAlarmFragment"
         android:label="fragment_add_alarm"
-        tools:layout="@layout/fragment_add_alarm" >
-        <action
-            android:id="@+id/action_addAlarmFragment_to_mainFragment"
-            app:destination="@id/mainFragment" />
-    </fragment>
+        tools:layout="@layout/fragment_add_alarm" />
+    <fragment
+        android:id="@+id/math_alarm"
+        android:name="edu.sjsu.android.wakebuddy.math_alarm"
+        android:label="math_alarm" />
 </navigation>

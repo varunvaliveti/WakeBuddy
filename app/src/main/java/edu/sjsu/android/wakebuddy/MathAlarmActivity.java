@@ -15,9 +15,10 @@ public class MathAlarmActivity extends AppCompatActivity {
         setContentView(R.layout.math_alarm);
 
         String label = getIntent().getStringExtra("label");
-        TextView alarmLabel = findViewById(R.id.mathAlarmText);
+        TextView alarmLabel = findViewById(R.id.questionText);
         alarmLabel.setText(label);
 
+        /* No Stop Alarm Button
         Button stopAlarmButton = findViewById(R.id.stopAlarmButtonMath);
         stopAlarmButton.setOnClickListener(v -> {
             // The following 3 lines are to stop the foreground service and finish the activity
@@ -26,8 +27,10 @@ public class MathAlarmActivity extends AppCompatActivity {
             stopService(stopServiceIntent);
             finish();
         });
+         */
     }
 
+    @SuppressWarnings("deprecation")
     @Override
     protected void onUserLeaveHint() {
         // Ignore warning telling to call super(), since we're overriding it
@@ -37,6 +40,7 @@ public class MathAlarmActivity extends AppCompatActivity {
         startActivity(intent);
     }
 
+    @SuppressWarnings("deprecation")
     @Override
     public void onBackPressed() {
         // Ignore warning telling to call super(), since we don't want

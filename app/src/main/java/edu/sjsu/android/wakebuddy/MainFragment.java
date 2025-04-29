@@ -1,10 +1,7 @@
 package edu.sjsu.android.wakebuddy;
 
-import android.app.AlarmManager;
-import android.app.PendingIntent;
 import android.content.Context;
-import android.content.Intent;
-import android.os.Build;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -15,19 +12,21 @@ import androidx.navigation.fragment.NavHostFragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import android.provider.Settings;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.TextView;
 import android.widget.Toast;
 
-import java.util.ArrayList;
-import java.util.Calendar;
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 
-public class MainFragment extends Fragment implements AlarmDeleteListener {
+import java.lang.reflect.Type;
+import java.util.ArrayList;
+
+public class MainFragment extends Fragment implements AlarmDeleteListener, AlarmChangeListener {
     private static ArrayList<Alarm> alarms;
     private NavController controller;
 
@@ -39,15 +38,7 @@ public class MainFragment extends Fragment implements AlarmDeleteListener {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        if (getArguments() != null) {
-            // Handle params here
-        }
-
-        // alarms = new ArrayList<>();
-        // Test Values
-        alarms.add(new Alarm("7:00 AM", "School","Movement", "Mon, Tues", false));
-        alarms.add(new Alarm("9:00 PM", "Study","Math", "Mon, Tues, Thurs", true));
-        alarms.add(new Alarm("10:00 AM", "Work","Barcode", "Mon, Fri, Sat", false));
+        loadAlarmsFromStorage();
     }
 
     @Override
@@ -63,27 +54,57 @@ public class MainFragment extends Fragment implements AlarmDeleteListener {
         RecyclerView alarmsRecyclerView = view.findViewById(R.id.alarmsRecyclerView);
 
         alarmsRecyclerView.setLayoutManager(new LinearLayoutManager(requireContext()));
-        AlarmAdapter adapter = new AlarmAdapter(alarms, this);
+        AlarmAdapter adapter = new AlarmAdapter(alarms, this, this);
         alarmsRecyclerView.setAdapter(adapter);
 
         getParentFragmentManager()
                 .setFragmentResultListener("alarm_request_key", this, (requestKey, bundle) -> {
+                    int editIndex = bundle.getInt("edit_index", -1);
                     Alarm alarm = (Alarm) bundle.getSerializable("alarm");
+
                     if (alarm != null) {
-                        alarms.add(alarm);
-                        adapter.notifyItemInserted(alarms.size() - 1);
+                        if (editIndex != -1) {
+                            Alarm oldAlarm = alarms.get(editIndex);
+                            AlarmUtils.cancelAlarm(requireContext(), oldAlarm); // cancel old
+                            alarms.set(editIndex, alarm);
+                            adapter.notifyItemChanged(editIndex);
+                        } else {
+                            alarms.add(alarm);
+                            adapter.notifyItemInserted(alarms.size() - 1);
+                        }
 
                         if (alarm.isEnabled()) {
-                            setAndroidAlarm(requireContext(), alarm);
+                            AlarmUtils.setAlarm(requireContext(), alarm);
                         }
+
+                        saveAlarmsToStorage();
                     }
                 });
 
         controller = NavHostFragment.findNavController(this);
 
-        // TODO: find way to change background based on if alarms are enabled, optional feature tbh
+        TextView wakeupCounterText = view.findViewById(R.id.wakeupCounterText);
+        SharedPreferences prefs = requireActivity().getSharedPreferences("WakeBuddyPrefs", Context.MODE_PRIVATE);
+        int count = prefs.getInt("successfulWakeups", 0);
+        wakeupCounterText.setText("Wakeups: " + count);
+
+        //ImageView background = view.findViewById(R.id.backgroundImg);
+        //background.setImageResource(R.drawable.sky);
         ImageView background = view.findViewById(R.id.backgroundImg);
-        background.setImageResource(R.drawable.sky);
+
+        boolean hasEnabledAlarms = false;
+        for (Alarm alarm : alarms) {
+            if (alarm.isEnabled()) {
+                hasEnabledAlarms = true;
+                break;
+            }
+        }
+
+        if (hasEnabledAlarms) {
+            background.setImageResource(R.drawable.sky); // active alarms = daytime
+        } else {
+            background.setImageResource(R.drawable.night); // no alarms = sleepy mode
+        }
 
         ImageButton addAlarmBtn = view.findViewById(R.id.addAlarmButton);
         addAlarmBtn.setOnClickListener(v -> {
@@ -108,145 +129,41 @@ public class MainFragment extends Fragment implements AlarmDeleteListener {
         controller.navigate(R.id.addAlarmFragment);
     }
 
-    private void setAndroidAlarm(Context context, Alarm alarm) {
-        AlarmManager alarmManager = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
-        String[] daysArray = alarm.getDays().split(",\\s*");
-        String[] timeParts = alarm.getTime().split(":| ");
-        int hour = Integer.parseInt(timeParts[0]);
-        int minute = Integer.parseInt(timeParts[1]);
-        boolean isPM = timeParts[2].equalsIgnoreCase("PM");
-        if (isPM && hour != 12) hour += 12;
-        if (!isPM && hour == 12) hour = 0;
-
-        if (alarm.getDays().isEmpty()) {
-            // One-time alarm for next available time
-            Calendar calendar = Calendar.getInstance();
-            calendar.set(Calendar.HOUR_OF_DAY, hour);
-            calendar.set(Calendar.MINUTE, minute);
-            calendar.set(Calendar.SECOND, 0);
-            calendar.set(Calendar.MILLISECOND, 0);
-
-            // If the time has already passed today, schedule for tomorrow
-            if (calendar.before(Calendar.getInstance())) {
-                calendar.add(Calendar.DAY_OF_YEAR, 1);
-            }
-
-            Intent intent = new Intent(context, AlarmReceiver.class);
-            intent.putExtra("label", alarm.getLabel());
-            intent.putExtra("task", alarm.getTask());
-            intent.putExtra("time", alarm.getTime());
-
-            int requestCode = (alarm.getLabel() + "once").hashCode();
-            PendingIntent pendingIntent = PendingIntent.getBroadcast(
-                    context,
-                    requestCode,
-                    intent,
-                    PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE
-            );
-
-            alarmManager.setExactAndAllowWhileIdle(
-                    AlarmManager.RTC_WAKEUP,
-                    calendar.getTimeInMillis(),
-                    pendingIntent
-            );
-        }
-        else {
-            // TODO: Recurring alarms still need to be tested
-            for (String day : daysArray) {
-                int dayOfWeek = mapDayToCalendar(day);
-                if (dayOfWeek == -1)
-                    continue;
-
-                Calendar calendar = Calendar.getInstance();
-                calendar.set(Calendar.DAY_OF_WEEK, dayOfWeek);
-                calendar.set(Calendar.HOUR_OF_DAY, hour);
-                calendar.set(Calendar.MINUTE, minute);
-                calendar.set(Calendar.SECOND, 0);
-                calendar.set(Calendar.MILLISECOND, 0);
-
-                // If time is before now, schedule for next week
-                if (calendar.before(Calendar.getInstance())) {
-                    calendar.add(Calendar.WEEK_OF_YEAR, 1);
-                }
-
-                Intent intent = new Intent(context, AlarmReceiver.class);
-                intent.putExtra("label", alarm.getLabel());
-                intent.putExtra("task", alarm.getTask());
-                intent.putExtra("day", dayOfWeek); // Save the scheduled day for rescheduling
-                intent.putExtra("time", alarm.getTime()); // Also needed for rescheduling
-
-                int requestCode = (alarm.getLabel() + day).hashCode(); // unique per label+day
-                PendingIntent pendingIntent = PendingIntent.getBroadcast(
-                        context,
-                        requestCode,
-                        intent,
-                        PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE
-                );
-
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
-                    if (!alarmManager.canScheduleExactAlarms()) {
-                        Intent reqSchedIntent = new Intent(Settings.ACTION_REQUEST_SCHEDULE_EXACT_ALARM);
-                        context.startActivity(reqSchedIntent);
-                        return;
-                    }
-                }
-
-                try {
-                    alarmManager.setExactAndAllowWhileIdle(
-                            AlarmManager.RTC_WAKEUP,
-                            calendar.getTimeInMillis(),
-                            pendingIntent
-                    );
-                } catch (SecurityException e) {
-                    Log.e("Alarm", "Exact alarm scheduling not permitted: " + e.getMessage());
-                }
-            }
-        }
+    private void saveAlarmsToStorage() {
+        SharedPreferences prefs = requireActivity().getSharedPreferences("WakeBuddyPrefs", Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = prefs.edit();
+        Gson gson = new Gson();
+        String json = gson.toJson(alarms);
+        editor.putString("alarms", json);
+        editor.apply();
     }
 
-    private int mapDayToCalendar(String day) {
-        switch (day) {
-            case "Sun": return Calendar.SUNDAY;
-            case "Mon": return Calendar.MONDAY;
-            case "Tues": return Calendar.TUESDAY;
-            case "Wed": return Calendar.WEDNESDAY;
-            case "Thurs": return Calendar.THURSDAY;
-            case "Fri": return Calendar.FRIDAY;
-            case "Sat": return Calendar.SATURDAY;
-            default: return -1;
+    private void loadAlarmsFromStorage() {
+        SharedPreferences prefs = requireActivity().getSharedPreferences("WakeBuddyPrefs", Context.MODE_PRIVATE);
+        String json = prefs.getString("alarms", null);
+        if (json != null) {
+            Type type = new TypeToken<ArrayList<Alarm>>() {}.getType();
+            alarms = new Gson().fromJson(json, type);
+        } else {
+            alarms = new ArrayList<>();
         }
     }
 
     @Override
     public void onAlarmDelete(Alarm alarm) {
-        AlarmManager alarmManager = (AlarmManager) requireContext().getSystemService(Context.ALARM_SERVICE);
-
-        String[] daysArray = alarm.getDays().split(",\\s*");
-        if (alarm.getDays().isEmpty()) {
-            int requestCode = (alarm.getLabel() + "once").hashCode();
-            Intent intent = new Intent(requireContext(), AlarmReceiver.class);
-            PendingIntent pendingIntent = PendingIntent.getBroadcast(
-                    requireContext(), requestCode, intent,
-                    PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE
-            );
-            alarmManager.cancel(pendingIntent);
-        } else {
-            for (String day : daysArray) {
-                int requestCode = (alarm.getLabel() + day).hashCode();
-                Intent intent = new Intent(requireContext(), AlarmReceiver.class);
-                PendingIntent pendingIntent = PendingIntent.getBroadcast(
-                        requireContext(), requestCode, intent,
-                        PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE
-                );
-                alarmManager.cancel(pendingIntent);
-            }
-        }
+        AlarmUtils.cancelAlarm(requireContext(), alarm);
 
         int index = alarms.indexOf(alarm);
         if (index != -1) {
             alarms.remove(index);
             RecyclerView recyclerView = requireView().findViewById(R.id.alarmsRecyclerView);
             ((AlarmAdapter) recyclerView.getAdapter()).notifyItemRemoved(index);
+            saveAlarmsToStorage();
         }
+    }
+
+    @Override
+    public void onAlarmChange() {
+        saveAlarmsToStorage();
     }
 }
