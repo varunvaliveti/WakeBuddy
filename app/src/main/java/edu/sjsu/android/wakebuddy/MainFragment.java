@@ -31,7 +31,6 @@ public class MainFragment extends Fragment implements AlarmDeleteListener, Alarm
     private NavController controller;
 
     public MainFragment() {
-        // Required empty public constructor
         alarms = new ArrayList<Alarm>();
     }
 
@@ -44,7 +43,6 @@ public class MainFragment extends Fragment implements AlarmDeleteListener, Alarm
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
         return inflater.inflate(R.layout.fragment_main, container, false);
     }
 
@@ -88,8 +86,6 @@ public class MainFragment extends Fragment implements AlarmDeleteListener, Alarm
         int count = prefs.getInt("successfulWakeups", 0);
         wakeupCounterText.setText("Wakeups: " + count);
 
-        //ImageView background = view.findViewById(R.id.backgroundImg);
-        //background.setImageResource(R.drawable.sky);
         ImageView background = view.findViewById(R.id.backgroundImg);
 
         boolean hasEnabledAlarms = false;
@@ -108,19 +104,16 @@ public class MainFragment extends Fragment implements AlarmDeleteListener, Alarm
 
         ImageButton addAlarmBtn = view.findViewById(R.id.addAlarmButton);
         addAlarmBtn.setOnClickListener(v -> {
-            // TODO: handle onclick for adding alarms
             goAddAlarm();
         });
 
         ImageButton settingsBtn = view.findViewById(R.id.alarmSettingsButton);
         settingsBtn.setOnClickListener(v -> {
-            // TODO: handle onclick for settings
-            Toast.makeText(getContext(), "Settings button clicked", Toast.LENGTH_SHORT).show();
+            controller.navigate(R.id.settingsFragment);
         });
 
         ImageButton calendarBtn = view.findViewById(R.id.calendarButton);
         calendarBtn.setOnClickListener(v -> {
-            // TODO: handle onclick for calendar
             Toast.makeText(getContext(), "Add calendar button clicked", Toast.LENGTH_SHORT).show();
         });
     }
