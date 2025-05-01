@@ -44,7 +44,7 @@ public class MovementAlarmActivity extends AppCompatActivity implements SensorEv
             accelerometer = sensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
         }
 
-        if (accelerometer != null) {
+        if (sensorManager != null && accelerometer != null) {
             sensorManager.registerListener(this, accelerometer, SensorManager.SENSOR_DELAY_NORMAL);
         }
 
