@@ -15,13 +15,12 @@ import com.journeyapps.barcodescanner.ScanOptions;
 
 public class BarcodeAlarmActivity extends AppCompatActivity {
     private ActivityResultLauncher<ScanOptions> barcodeLauncher;
-    private static final String CORRECT = "1234";
+    public static String correct = "1234";
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.barcode_alarm);
 
-        // 1) register the scan‐contract
         barcodeLauncher = registerForActivityResult(
                 new ScanContract(),
                 result -> {
@@ -34,7 +33,7 @@ public class BarcodeAlarmActivity extends AppCompatActivity {
                         // re-launch if you want
                         barcodeLauncher.launch(new ScanOptions().setPrompt("Scan barcode to stop alarm"));
                     }
-                    else if (CORRECT.equals(contents)) {
+                    else if (correct.equals(contents)) {
                         // correct! stop the alarm
                         stopService(new Intent(BarcodeAlarmActivity.this, AlarmService.class));
                         finish();
@@ -48,7 +47,6 @@ public class BarcodeAlarmActivity extends AppCompatActivity {
                 }
         );
 
-        // 2) launch the scanner right away
         barcodeLauncher.launch(
                 new ScanOptions()
                         .setDesiredBarcodeFormats(ScanOptions.ALL_CODE_TYPES)

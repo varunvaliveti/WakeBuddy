@@ -5,4 +5,8 @@
     <string name="fragment_for_setting_alarms_requiring_movement">Fragment for setting alarms requiring movement</string>
     <string name="fragment_for_setting_math_alarm">Fragment for setting math alarm</string>
     <string name="fragment_for_setting_barcode_alarm">Fragment for setting barcode alarm</string>
+    <string name="barcode_one">Barcode 1234</string>
+    <string name="barcode_two">Barcode 5678</string>
+    <string name="barcode_three">Barcode 1111</string>
+    <string name="select_barcode">Select Barcode</string>
 </resources>
