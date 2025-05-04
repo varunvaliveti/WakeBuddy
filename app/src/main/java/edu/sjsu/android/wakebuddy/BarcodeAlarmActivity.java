@@ -1,8 +1,11 @@
 package edu.sjsu.android.wakebuddy;
 
 import android.annotation.SuppressLint;
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.util.Log;
 import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -20,6 +23,9 @@ public class BarcodeAlarmActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        SharedPreferences prefs = getSharedPreferences("settings", Context.MODE_PRIVATE);
+        String saved_code = prefs.getString("correct_code", "1234");
+        setCorrect(saved_code);
         setContentView(R.layout.barcode_alarm);
 
         barcodeLauncher = registerForActivityResult(
@@ -56,10 +62,13 @@ public class BarcodeAlarmActivity extends AppCompatActivity {
         );
     }
 
-    // Register the launcher and result handler
+    public static void setCorrect(String newCorrect){
+        correct = newCorrect;
+    }
 
-
-
+    public String getCorrect(){
+        return correct;
+    }
 
     @SuppressLint("MissingSuperCall")
     @Override

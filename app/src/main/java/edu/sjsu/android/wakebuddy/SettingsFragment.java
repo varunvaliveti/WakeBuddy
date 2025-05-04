@@ -43,6 +43,20 @@ public class SettingsFragment extends Fragment {
         boolean isDark = prefs.getBoolean("dark_mode", false);
         darkModeSwitch.setChecked(isDark);
 
+        String savedCode = prefs.getString("correct_code", "1234");
+        BarcodeAlarmActivity.setCorrect(savedCode);
+        switch (savedCode) {
+            case "1234":
+                rg.check(R.id.radioButton);
+                break;
+            case "5678":
+                rg.check(R.id.radioButton2);
+                break;
+            case "1111":
+                rg.check(R.id.radioButton3);
+                break;
+        }
+
         darkModeSwitch.setOnCheckedChangeListener((buttonView, isChecked) -> {
             prefs.edit().putBoolean("dark_mode", isChecked).apply();
             if (isChecked) {
@@ -52,10 +66,18 @@ public class SettingsFragment extends Fragment {
             }
         });
 
+
         rg.setOnCheckedChangeListener((group, checkedId) -> {
-            if(checkedId == 2131231315) BarcodeAlarmActivity.correct = "1234";
-            if(checkedId == 2131231316) BarcodeAlarmActivity.correct = "5678";
-            if(checkedId == 2131231317) BarcodeAlarmActivity.correct = "1111";
+            String code;
+            if (checkedId == R.id.radioButton) {
+                code = "1234";
+            } else if (checkedId == R.id.radioButton2) {
+                code = "5678";
+            } else {
+                code = "1111";
+            }
+            prefs.edit().putString("correct_code", code).apply();
+            BarcodeAlarmActivity.setCorrect(code);
         });
 
 
