@@ -31,7 +31,7 @@ public class MainFragment extends Fragment implements AlarmDeleteListener, Alarm
     private NavController controller;
 
     public MainFragment() {
-        alarms = new ArrayList<Alarm>();
+        alarms = new ArrayList<>();
     }
 
     @Override

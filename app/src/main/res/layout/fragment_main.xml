@@ -10,7 +10,7 @@
         android:id="@+id/backgroundImg"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:contentDescription="TODO"
+        android:contentDescription="@string/background_image"
         android:scaleType="centerCrop"
         android:src="@drawable/night"/>
 
@@ -30,7 +30,7 @@
         android:layout_height="100dp"
         android:layout_marginBottom="8dp"
         android:background="@drawable/add_button"
-        android:contentDescription="TODO"
+        android:contentDescription="@string/button_to_go_to_add_alarm_screen"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent" />
@@ -41,7 +41,7 @@
         android:layout_height="80dp"
         android:layout_marginBottom="8dp"
         android:background="@drawable/settings_button"
-        android:contentDescription="TODO"
+        android:contentDescription="@string/button_to_go_to_settings"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@+id/addAlarmButton" />
@@ -52,7 +52,7 @@
         android:layout_height="80dp"
         android:layout_marginBottom="8dp"
         android:background="@drawable/calendar"
-        android:contentDescription="TODO"
+        android:contentDescription="@string/button_to_go_to_calendar"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toStartOf="@+id/addAlarmButton"
         app:layout_constraintStart_toStartOf="parent" />
@@ -61,7 +61,7 @@
         android:id="@+id/wakeupCounterText"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Wakeups: 0"
+        android:text="@string/wakeups_0"
         android:textSize="18sp"
         android:textStyle="bold"
         android:textColor="@android:color/white"

@@ -1,5 +1,6 @@
 package edu.sjsu.android.wakebuddy;
 
+import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.os.Bundle;
 import android.widget.Button;
@@ -60,6 +61,7 @@ public class BarcodeAlarmActivity extends AppCompatActivity {
 
 
 
+    @SuppressLint("MissingSuperCall")
     @Override
     protected void onUserLeaveHint() {
         // Ignore warning telling to call super(), since we're overriding it
@@ -69,6 +71,7 @@ public class BarcodeAlarmActivity extends AppCompatActivity {
         startActivity(intent);
     }
 
+    @SuppressLint("MissingSuperCall")
     @Override
     public void onBackPressed() {
         // Ignore warning telling to call super(), since we don't want

@@ -26,7 +26,7 @@ public class YellingAlarmActivity extends AppCompatActivity {
     public static final String RECORD_AUDIO = "android.permission.RECORD_AUDIO";
 
     private MediaRecorder recorder;
-    private Handler handler = new Handler();
+    private final Handler handler = new Handler();
     private long startTime = -1;
     private ProgressBar progressBar;
     private TextView statusText;
@@ -57,7 +57,7 @@ public class YellingAlarmActivity extends AppCompatActivity {
                     long elapsed = System.currentTimeMillis() - startTime;
                     int pct = (int)(elapsed * 100 / YELLING_DURATION_MS);
                     progressBar.setProgress(Math.min(pct, 100));
-                    statusText.setText("Keep Yelling!");
+                    statusText.setText(R.string.keep_yelling);
 
                     if (elapsed >= YELLING_DURATION_MS) {
                         stopAlarmAndFinish();
@@ -66,7 +66,7 @@ public class YellingAlarmActivity extends AppCompatActivity {
                 } else {
                     startTime = -1;
                     progressBar.setProgress(0);
-                    statusText.setText("You stopped! Try again!");
+                    statusText.setText(R.string.you_stopped_try_again);
                 }
                 handler.postDelayed(this, POLL_INTERVAL_MS);
             }

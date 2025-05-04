@@ -24,7 +24,7 @@ public class MovementAlarmActivity extends AppCompatActivity implements SensorEv
     private static final long INACTIVITY_RESET_TIME_MS = 1000; // 1 second
     private boolean isMoving = false;
     private long lastMovementTimestamp = 0;
-    private Handler handler = new Handler();
+    private final Handler handler = new Handler();
     private Runnable successRunnable;
     private Runnable progressUpdateRunnable;
     private ProgressBar progressBar;
@@ -104,7 +104,7 @@ public class MovementAlarmActivity extends AppCompatActivity implements SensorEv
                 movementStartTime = currentTime;
                 handler.postDelayed(successRunnable, CONTINUOUS_MOVEMENT_TIME_MS);
                 handler.post(progressUpdateRunnable);
-                statusText.setText("Keep moving!");
+                statusText.setText(R.string.keep_moving);
             }
             lastMovementTimestamp = currentTime;
         } else {
@@ -113,7 +113,7 @@ public class MovementAlarmActivity extends AppCompatActivity implements SensorEv
                 handler.removeCallbacks(successRunnable);
                 handler.removeCallbacks(progressUpdateRunnable);
                 progressBar.setProgress(0);
-                statusText.setText("You stopped! Try again!");
+                statusText.setText(R.string.you_stopped_try_again);
             }
         }
     }
