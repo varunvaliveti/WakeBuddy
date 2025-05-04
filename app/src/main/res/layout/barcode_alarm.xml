@@ -9,24 +9,13 @@
         android:id="@+id/barcodeAlarmText"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Placeholder Alarm Screen"
+        android:text="@string/placeholder_alarm_screen"
         android:textSize="32sp"
         android:textStyle="bold"
         android:layout_centerHorizontal="true"
         android:layout_marginBottom="32dp"
         android:layout_centerVertical="true"
         android:gravity="center"/>
-
-    <Button
-        android:id="@+id/stopAlarmButtonBarcode"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Stop Alarm"
-        android:textSize="18sp"
-        android:padding="16dp"
-        android:layout_below="@id/barcodeAlarmText"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="48dp" />
 
     <TextView
         android:id="@+id/textView4"
@@ -36,5 +25,5 @@
         android:layout_alignParentTop="true"
         android:layout_marginStart="32dp"
         android:layout_marginTop="32dp"
-        android:text="Barcode" />
+        android:text="@string/barcode" />
 </RelativeLayout>

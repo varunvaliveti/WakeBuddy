@@ -32,9 +32,6 @@ public class AddAlarmFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        if (getArguments() != null) {
-            // handle params here
-        }
     }
 
     @Override
@@ -78,10 +75,20 @@ public class AddAlarmFragment extends Fragment {
 
             String task = editingAlarm.getTask();
             RadioGroup radioGroup = view.findViewById(R.id.radioGroup);
-            if (task.equals("Movement")) radioGroup.check(R.id.movementButton);
-            else if (task.equals("Yelling")) radioGroup.check(R.id.yellingButton);
-            else if (task.equals("Math")) radioGroup.check(R.id.mathButton);
-            else if (task.equals("Barcode")) radioGroup.check(R.id.barcodeButton);
+            switch (task) {
+                case "Movement":
+                    radioGroup.check(R.id.movementButton);
+                    break;
+                case "Yelling":
+                    radioGroup.check(R.id.yellingButton);
+                    break;
+                case "Math":
+                    radioGroup.check(R.id.mathButton);
+                    break;
+                case "Barcode":
+                    radioGroup.check(R.id.barcodeButton);
+                    break;
+            }
 
             String[] selectedDays = editingAlarm.getDays().split(",\\s*");
             LinearLayout linearLayout = view.findViewById(R.id.linearLayout);

@@ -38,7 +38,7 @@
             android:button="@null"
             android:gravity="center"
             android:padding="10dp"
-            android:text="Sun" />
+            android:text="@string/sun" />
 
         <CheckBox
             android:id="@+id/monBox"
@@ -49,7 +49,7 @@
             android:button="@null"
             android:gravity="center"
             android:padding="10dp"
-            android:text="Mon" />
+            android:text="@string/mon" />
 
         <CheckBox
             android:id="@+id/tuesBox"
@@ -60,7 +60,7 @@
             android:button="@null"
             android:gravity="center"
             android:padding="10dp"
-            android:text="Tues" />
+            android:text="@string/tues" />
 
         <CheckBox
             android:id="@+id/wedBox"
@@ -71,7 +71,7 @@
             android:button="@null"
             android:gravity="center"
             android:padding="10dp"
-            android:text="Wed" />
+            android:text="@string/wed" />
 
         <CheckBox
             android:id="@+id/thursBox"
@@ -82,7 +82,7 @@
             android:button="@null"
             android:gravity="center"
             android:padding="10dp"
-            android:text="Thurs" />
+            android:text="@string/thurs" />
 
         <CheckBox
             android:id="@+id/friBox"
@@ -93,7 +93,7 @@
             android:button="@null"
             android:gravity="center"
             android:padding="10dp"
-            android:text="Fri" />
+            android:text="@string/fri" />
 
         <CheckBox
             android:id="@+id/satBox"
@@ -104,7 +104,7 @@
             android:button="@null"
             android:gravity="center"
             android:padding="10dp"
-            android:text="Sat" />
+            android:text="@string/sat" />
     </LinearLayout>
 
     <RadioGroup
@@ -121,44 +121,40 @@
             android:id="@+id/movementButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_margin="4dp"
             android:layout_weight="1"
             android:drawableTop="@drawable/scaled_walrus_button"
             android:gravity="center"
-            android:text="Movement"
-            android:textSize="12sp" />
+            android:text="@string/movement"
+            android:textSize="10sp" />
 
         <RadioButton
             android:id="@+id/yellingButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_margin="4dp"
             android:layout_weight="1"
             android:drawableTop="@drawable/scaled_chicken_button"
             android:gravity="center"
-            android:text="Yelling"
+            android:text="@string/yelling"
             android:textSize="12sp" />
 
         <RadioButton
             android:id="@+id/mathButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_margin="4dp"
             android:layout_weight="1"
             android:drawableTop="@drawable/scaled_eagle_button"
             android:gravity="center"
-            android:text="Math"
+            android:text="@string/math"
             android:textSize="12sp" />
 
         <RadioButton
             android:id="@+id/barcodeButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_margin="4dp"
             android:layout_weight="1"
             android:drawableTop="@drawable/scaled_racoon_button"
             android:gravity="center"
-            android:text="Barcode"
+            android:text="@string/barcode"
             android:textSize="12sp" />
 
 
@@ -168,7 +164,7 @@
         android:id="@+id/add_confirm_btn"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Confirm"
+        android:text="@string/confirm"
         app:layout_constraintBottom_toBottomOf="@+id/add_cancel_btn"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5"
@@ -182,7 +178,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="8dp"
         android:backgroundTint="@color/red"
-        android:text="Cancel"
+        android:text="@string/cancel"
         app:layout_constraintEnd_toStartOf="@+id/add_confirm_btn"
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
@@ -193,7 +189,6 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:autofillHints=""
-        android:hint="Enter"
         android:inputType="text"
         android:text=""
         app:layout_constraintBottom_toBottomOf="@+id/alarm_text_entry_label"
@@ -204,11 +199,11 @@
 
     <TextView
         android:id="@+id/alarm_text_entry_label"
-        android:labelFor="@+id/alarm_name_entry"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
-        android:text="Alarm Name: "
+        android:layout_marginTop="24dp"
+        android:labelFor="@+id/alarm_name_entry"
+        android:text="@string/alarm_name"
         app:layout_constraintEnd_toStartOf="@+id/alarm_name_entry"
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"

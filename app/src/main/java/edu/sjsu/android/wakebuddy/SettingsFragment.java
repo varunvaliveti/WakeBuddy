@@ -16,6 +16,8 @@ import android.view.ViewGroup;
 import android.widget.RadioGroup;
 import android.widget.Switch;
 
+import com.google.android.material.materialswitch.MaterialSwitch;
+
 public class SettingsFragment extends Fragment {
 
     public SettingsFragment() {
@@ -35,7 +37,7 @@ public class SettingsFragment extends Fragment {
         RadioGroup rg = view.findViewById(R.id.radioGroup2);
 
 
-        Switch darkModeSwitch = view.findViewById(R.id.darkModeSwitch);
+        MaterialSwitch darkModeSwitch = view.findViewById(R.id.darkModeSwitch);
 
         SharedPreferences prefs = requireContext().getSharedPreferences("settings", Context.MODE_PRIVATE);
         boolean isDark = prefs.getBoolean("dark_mode", false);
@@ -50,14 +52,10 @@ public class SettingsFragment extends Fragment {
             }
         });
 
-        rg.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(RadioGroup group, int checkedId) {
-                if(checkedId == 2131231315) BarcodeAlarmActivity.correct = "1234";
-                if(checkedId == 2131231316) BarcodeAlarmActivity.correct = "5678";
-                if(checkedId == 2131231317) BarcodeAlarmActivity.correct = "1111";
-
-            }
+        rg.setOnCheckedChangeListener((group, checkedId) -> {
+            if(checkedId == 2131231315) BarcodeAlarmActivity.correct = "1234";
+            if(checkedId == 2131231316) BarcodeAlarmActivity.correct = "5678";
+            if(checkedId == 2131231317) BarcodeAlarmActivity.correct = "1111";
         });
 
 
