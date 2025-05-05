@@ -2,6 +2,7 @@ package edu.sjsu.android.wakebuddy;
 
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.content.res.Configuration;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -18,7 +19,6 @@ import android.view.ViewGroup;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
@@ -50,7 +50,6 @@ public class MainFragment extends Fragment implements AlarmDeleteListener, Alarm
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         RecyclerView alarmsRecyclerView = view.findViewById(R.id.alarmsRecyclerView);
-
         alarmsRecyclerView.setLayoutManager(new LinearLayoutManager(requireContext()));
         AlarmAdapter adapter = new AlarmAdapter(alarms, this, this);
         alarmsRecyclerView.setAdapter(adapter);
@@ -59,22 +58,19 @@ public class MainFragment extends Fragment implements AlarmDeleteListener, Alarm
                 .setFragmentResultListener("alarm_request_key", this, (requestKey, bundle) -> {
                     int editIndex = bundle.getInt("edit_index", -1);
                     Alarm alarm = (Alarm) bundle.getSerializable("alarm");
-
                     if (alarm != null) {
                         if (editIndex != -1) {
                             Alarm oldAlarm = alarms.get(editIndex);
-                            AlarmUtils.cancelAlarm(requireContext(), oldAlarm); // cancel old
+                            AlarmUtils.cancelAlarm(requireContext(), oldAlarm);
                             alarms.set(editIndex, alarm);
                             adapter.notifyItemChanged(editIndex);
                         } else {
                             alarms.add(alarm);
                             adapter.notifyItemInserted(alarms.size() - 1);
                         }
-
                         if (alarm.isEnabled()) {
                             AlarmUtils.setAlarm(requireContext(), alarm);
                         }
-
                         saveAlarmsToStorage();
                     }
                 });
@@ -87,35 +83,21 @@ public class MainFragment extends Fragment implements AlarmDeleteListener, Alarm
         wakeupCounterText.setText("Wakeups: " + count);
 
         ImageView background = view.findViewById(R.id.backgroundImg);
-
-        boolean hasEnabledAlarms = false;
-        for (Alarm alarm : alarms) {
-            if (alarm.isEnabled()) {
-                hasEnabledAlarms = true;
-                break;
-            }
-        }
-
-        if (hasEnabledAlarms) {
-            background.setImageResource(R.drawable.sky); // active alarms = daytime
+        int mode = getResources().getConfiguration().uiMode & Configuration.UI_MODE_NIGHT_MASK;
+        if (mode == Configuration.UI_MODE_NIGHT_YES) {
+            background.setImageResource(R.drawable.night);
         } else {
-            background.setImageResource(R.drawable.night); // no alarms = sleepy mode
+            background.setImageResource(R.drawable.sky);
         }
 
         ImageButton addAlarmBtn = view.findViewById(R.id.addAlarmButton);
-        addAlarmBtn.setOnClickListener(v -> {
-            goAddAlarm();
-        });
+        addAlarmBtn.setOnClickListener(v -> goAddAlarm());
 
         ImageButton settingsBtn = view.findViewById(R.id.alarmSettingsButton);
-        settingsBtn.setOnClickListener(v -> {
-            controller.navigate(R.id.settingsFragment);
-        });
+        settingsBtn.setOnClickListener(v -> controller.navigate(R.id.settingsFragment));
 
         ImageButton calendarBtn = view.findViewById(R.id.calendarButton);
-        calendarBtn.setOnClickListener(v -> {
-            Toast.makeText(getContext(), "Add calendar button clicked", Toast.LENGTH_SHORT).show();
-        });
+        calendarBtn.setOnClickListener(v -> controller.navigate(R.id.calendarFragment));
     }
 
     public void goAddAlarm() {
@@ -145,7 +127,6 @@ public class MainFragment extends Fragment implements AlarmDeleteListener, Alarm
     @Override
     public void onAlarmDelete(Alarm alarm) {
         AlarmUtils.cancelAlarm(requireContext(), alarm);
-
         int index = alarms.indexOf(alarm);
         if (index != -1) {
             alarms.remove(index);
