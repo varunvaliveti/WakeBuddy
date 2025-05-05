@@ -1,7 +1,11 @@
 package edu.sjsu.android.wakebuddy;
 
+import android.annotation.SuppressLint;
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.util.Log;
 import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -15,13 +19,15 @@ import com.journeyapps.barcodescanner.ScanOptions;
 
 public class BarcodeAlarmActivity extends AppCompatActivity {
     private ActivityResultLauncher<ScanOptions> barcodeLauncher;
-    private static final String CORRECT = "1234";
+    public static String correct = "1234";
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        SharedPreferences prefs = getSharedPreferences("settings", Context.MODE_PRIVATE);
+        String saved_code = prefs.getString("correct_code", "1234");
+        setCorrect(saved_code);
         setContentView(R.layout.barcode_alarm);
 
-        // 1) register the scan‐contract
         barcodeLauncher = registerForActivityResult(
                 new ScanContract(),
                 result -> {
@@ -34,7 +40,7 @@ public class BarcodeAlarmActivity extends AppCompatActivity {
                         // re-launch if you want
                         barcodeLauncher.launch(new ScanOptions().setPrompt("Scan barcode to stop alarm"));
                     }
-                    else if (CORRECT.equals(contents)) {
+                    else if (correct.equals(contents)) {
                         // correct! stop the alarm
                         stopService(new Intent(BarcodeAlarmActivity.this, AlarmService.class));
                         finish();
@@ -48,7 +54,6 @@ public class BarcodeAlarmActivity extends AppCompatActivity {
                 }
         );
 
-        // 2) launch the scanner right away
         barcodeLauncher.launch(
                 new ScanOptions()
                         .setDesiredBarcodeFormats(ScanOptions.ALL_CODE_TYPES)
@@ -57,11 +62,15 @@ public class BarcodeAlarmActivity extends AppCompatActivity {
         );
     }
 
-    // Register the launcher and result handler
+    public static void setCorrect(String newCorrect){
+        correct = newCorrect;
+    }
 
+    public String getCorrect(){
+        return correct;
+    }
 
-
-
+    @SuppressLint("MissingSuperCall")
     @Override
     protected void onUserLeaveHint() {
         // Ignore warning telling to call super(), since we're overriding it
@@ -71,6 +80,7 @@ public class BarcodeAlarmActivity extends AppCompatActivity {
         startActivity(intent);
     }
 
+    @SuppressLint("MissingSuperCall")
     @Override
     public void onBackPressed() {
         // Ignore warning telling to call super(), since we don't want
