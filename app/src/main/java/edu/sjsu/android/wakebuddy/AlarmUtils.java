@@ -54,6 +54,7 @@ public class AlarmUtils {
             calendar.set(Calendar.SECOND, 0);
             calendar.set(Calendar.MILLISECOND, 0);
 
+            // Sets alarm to the next day if it's already passed
             if (calendar.before(Calendar.getInstance())) {
                 calendar.add(Calendar.DAY_OF_YEAR, 1);
             }
