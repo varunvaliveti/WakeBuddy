@@ -5,11 +5,18 @@ import android.app.PendingIntent;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Build;
 import android.provider.Settings;
 import android.util.Log;
 
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
+
+import java.lang.reflect.Type;
+import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.List;
 
 public class AlarmReceiver extends BroadcastReceiver {
     @Override
@@ -79,6 +86,28 @@ public class AlarmReceiver extends BroadcastReceiver {
             } catch (SecurityException e) {
                 Log.e("Alarm", "Exact alarm scheduling not permitted: " + e.getMessage());
             }
+        } else {
+            // Turn off one-time alarm visually on the main screen
+            SharedPreferences prefs = context.getSharedPreferences("WakeBuddyPrefs", Context.MODE_PRIVATE);
+            String json = prefs.getString("alarms", null);
+            if (json != null) {
+                Type type = new TypeToken<ArrayList<Alarm>>() {}.getType();
+                List<Alarm> alarms = new Gson().fromJson(json, type);
+                for (Alarm a : alarms) {
+                    if (a.getLabel().equals(label)
+                            && a.getTime().equals(time)
+                            && a.getDays().isEmpty()) {
+                        a.setEnabled(false);
+                        break;
+                    }
+                }
+                prefs.edit()
+                        .putString("alarms", new Gson().toJson(alarms))
+                        .apply();
+            }
+            // send a broadcast so the UI can reload
+            Intent update = new Intent("edu.sjsu.android.wakebuddy.ALARMS_UPDATED");
+            context.sendBroadcast(update);
         }
     }
 }

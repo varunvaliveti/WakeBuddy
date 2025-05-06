@@ -1,12 +1,16 @@
 package edu.sjsu.android.wakebuddy;
 
+import android.content.BroadcastReceiver;
 import android.content.Context;
+import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.content.res.Configuration;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.navigation.NavController;
 import androidx.navigation.fragment.NavHostFragment;
@@ -29,6 +33,15 @@ import java.util.ArrayList;
 public class MainFragment extends Fragment implements AlarmDeleteListener, AlarmChangeListener {
     private static ArrayList<Alarm> alarms;
     private NavController controller;
+    private AlarmAdapter adapter;
+    private final BroadcastReceiver alarmUpdateReceiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            // Reload the list and refresh adapter
+            loadAlarmsFromStorage();
+            adapter.updateData(alarms);
+        }
+    };
 
     public MainFragment() {
         alarms = new ArrayList<>();
@@ -53,6 +66,11 @@ public class MainFragment extends Fragment implements AlarmDeleteListener, Alarm
         alarmsRecyclerView.setLayoutManager(new LinearLayoutManager(requireContext()));
         AlarmAdapter adapter = new AlarmAdapter(alarms, this, this);
         alarmsRecyclerView.setAdapter(adapter);
+
+        ContextCompat.registerReceiver(
+                requireContext(), alarmUpdateReceiver,
+                new IntentFilter("edu.sjsu.android.wakebuddy.ALARMS_UPDATED"),
+                ContextCompat.RECEIVER_NOT_EXPORTED);
 
         getParentFragmentManager()
                 .setFragmentResultListener("alarm_request_key", this, (requestKey, bundle) -> {
@@ -139,5 +157,11 @@ public class MainFragment extends Fragment implements AlarmDeleteListener, Alarm
     @Override
     public void onAlarmChange() {
         saveAlarmsToStorage();
+    }
+
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        requireContext().unregisterReceiver(alarmUpdateReceiver);
     }
 }
