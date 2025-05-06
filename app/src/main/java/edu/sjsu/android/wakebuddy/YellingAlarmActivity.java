@@ -20,7 +20,7 @@ import java.io.IOException;
 
 public class YellingAlarmActivity extends AppCompatActivity {
     private static final int PERMISSION_REQUEST_CODE = 1001;
-    private static final int AMP_THRESHOLD = 9000;
+    private static final int AMP_THRESHOLD = 8000;
     private static final int YELLING_DURATION_MS = 3000;
     private static final int POLL_INTERVAL_MS = 100;
     public static final String RECORD_AUDIO = "android.permission.RECORD_AUDIO";
