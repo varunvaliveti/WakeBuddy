@@ -124,10 +124,6 @@ public class YellingAlarmActivity extends AppCompatActivity {
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        if (recorder != null) {
-            recorder.stop();
-            recorder.release();
-        }
         handler.removeCallbacks(successRunnable);
     }
 

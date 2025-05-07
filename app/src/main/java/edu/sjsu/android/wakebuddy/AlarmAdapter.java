@@ -101,10 +101,4 @@ public class AlarmAdapter extends RecyclerView.Adapter<AlarmAdapter.AlarmViewHol
     public int getItemCount() {
         return alarmList.size();
     }
-
-    public void updateData(List<Alarm> newAlarms) {
-        alarmList.clear();
-        alarmList.addAll(newAlarms);
-        notifyDataSetChanged();
-    }
 }
