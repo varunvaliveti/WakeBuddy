@@ -4,10 +4,14 @@ import static android.content.Context.MODE_PRIVATE;
 
 import static androidx.core.app.ActivityCompat.finishAffinity;
 
+import android.app.AlarmManager;
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.content.res.Configuration;
+import android.os.Build;
 import android.os.Bundle;
 
 import androidx.activity.result.ActivityResultLauncher;
@@ -22,6 +26,7 @@ import androidx.navigation.fragment.NavHostFragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.provider.Settings;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -127,6 +132,21 @@ public class MainFragment extends Fragment implements AlarmDeleteListener, Alarm
 
         ImageButton calendarBtn = view.findViewById(R.id.calendarButton);
         calendarBtn.setOnClickListener(v -> controller.navigate(R.id.calendarFragment));
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+            AlarmManager alarmManager = (AlarmManager) requireContext().getSystemService(Context.ALARM_SERVICE);
+            if (!alarmManager.canScheduleExactAlarms()) {
+                new AlertDialog.Builder(requireContext())
+                        .setTitle("Exact Alarm Permission")
+                        .setMessage("To make sure alarms ring on time, please allow WakeBuddy to schedule exact alarms.")
+                        .setPositiveButton("Grant", (dialog, which) -> {
+                            Intent intent = new Intent(Settings.ACTION_REQUEST_SCHEDULE_EXACT_ALARM);
+                            startActivity(intent);
+                        })
+                        .setNegativeButton("Later", null)
+                        .show();
+            }
+        }
     }
 
     public void goAddAlarm() {

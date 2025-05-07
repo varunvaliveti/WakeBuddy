@@ -153,13 +153,15 @@ public class AddAlarmFragment extends Fragment {
                 }
             }
 
-            String theDays = TextUtils.join(", ",days);
-
             // If no days are selected, select current day of the week
-            if (theDays.isEmpty()) {
-                theDays = mapCalendarToDay(Calendar.getInstance().get(Calendar.DAY_OF_WEEK));
+            if (days.isEmpty()) {
+                Calendar calendar = Calendar.getInstance();
+                int currentDayInt = calendar.get(Calendar.DAY_OF_WEEK);
+                String currentDayString = mapCalendarToDay(currentDayInt);
+                days.add(currentDayString);
             }
 
+            String theDays = TextUtils.join(", ",days);
             Alarm newAlarm = new Alarm(time, label, task, theDays, true);
 
             Bundle result = new Bundle();
