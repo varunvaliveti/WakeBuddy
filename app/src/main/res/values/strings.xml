@@ -1,6 +1,5 @@
 <resources>
     <string name="app_name">WakeBuddy</string>
-    <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="fragment_for_setting_alarms_requiring_movement">Fragment for setting alarms requiring movement</string>
     <string name="fragment_for_setting_math_alarm">Fragment for setting math alarm</string>
@@ -49,4 +48,11 @@
     <string name="keep_moving">Keep moving!</string>
     <string name="you_stopped_try_again">You stopped! Try again!</string>
     <string name="keep_yelling">Keep Yelling!</string>
+    <string name="settings_title">Settings</string>
+    <string name="language_button">Change Language</string>
+    <string name="select_language">Select Language</string>
+    <string name="english">English</string>
+    <string name="spanish">Español</string>
+    <string name="no_alarms_message">No alarms for selected date.</string>
+    <string name="wakeup_counter">Wakeups: %1$d</string>
 </resources>
