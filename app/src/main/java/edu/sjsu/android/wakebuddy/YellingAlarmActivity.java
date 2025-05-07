@@ -2,6 +2,7 @@ package edu.sjsu.android.wakebuddy;
 
 import android.annotation.SuppressLint;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.media.MediaRecorder;
 import android.os.Handler;
@@ -117,6 +118,11 @@ public class YellingAlarmActivity extends AppCompatActivity {
             recorder.stop();
             recorder.release();
         }
+
+        SharedPreferences prefs = getSharedPreferences("WakeBuddyPrefs", MODE_PRIVATE);
+        int count = prefs.getInt("successfulWakeups", 0);
+        prefs.edit().putInt("successfulWakeups", count + 1).apply();
+
         Toast.makeText(this, "Nice lungs! Alarm dismissed.", Toast.LENGTH_SHORT).show();
         finish();
     }

@@ -46,6 +46,10 @@ import java.util.Objects;
 public class MainFragment extends Fragment implements AlarmDeleteListener, AlarmChangeListener {
     private static ArrayList<Alarm> alarms;
     private NavController controller;
+    private SharedPreferences prefs;
+    private SharedPreferences.OnSharedPreferenceChangeListener wakeupListener;
+    private TextView wakeupCounterText;
+
     private final ActivityResultLauncher<String[]> permissionLauncher =
             registerForActivityResult(
                     new ActivityResultContracts.RequestMultiplePermissions(),
@@ -110,11 +114,17 @@ public class MainFragment extends Fragment implements AlarmDeleteListener, Alarm
 
         controller = NavHostFragment.findNavController(this);
 
-        TextView wakeupCounterText = view.findViewById(R.id.wakeupCounterText);
-        SharedPreferences prefs = requireActivity().getSharedPreferences("WakeBuddyPrefs", MODE_PRIVATE);
-        int count = prefs.getInt("successfulWakeups", 0);
-        wakeupCounterText.setText(getString(R.string.wakeup_counter, count));
+        wakeupCounterText = view.findViewById(R.id.wakeupCounterText);
+        prefs = requireActivity().getSharedPreferences("WakeBuddyPrefs", Context.MODE_PRIVATE);
 
+        updateWakeupText();
+
+        wakeupListener = (sharedPreferences, key) -> {
+            if ("successfulWakeups".equals(key)) {
+                updateWakeupText();
+            }
+        };
+        prefs.registerOnSharedPreferenceChangeListener(wakeupListener);
 
         ImageView background = view.findViewById(R.id.backgroundImg);
         int mode = getResources().getConfiguration().uiMode & Configuration.UI_MODE_NIGHT_MASK;
@@ -153,6 +163,19 @@ public class MainFragment extends Fragment implements AlarmDeleteListener, Alarm
         controller.navigate(R.id.addAlarmFragment);
     }
 
+    private void updateWakeupText() {
+        int count = prefs.getInt("successfulWakeups", 0);
+        wakeupCounterText.setText(getString(R.string.wakeup_counter, count));
+    }
+
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        if (prefs != null && wakeupListener != null) {
+            prefs.unregisterOnSharedPreferenceChangeListener(wakeupListener);
+        }
+    }
+
     private void saveAlarmsToStorage() {
         SharedPreferences prefs = requireActivity().getSharedPreferences("WakeBuddyPrefs", MODE_PRIVATE);
         SharedPreferences.Editor editor = prefs.edit();
@@ -189,6 +212,7 @@ public class MainFragment extends Fragment implements AlarmDeleteListener, Alarm
     public void onAlarmChange() {
         saveAlarmsToStorage();
     }
+
 
     private void checkAndRequestPermissions() {
         String[] required = {
