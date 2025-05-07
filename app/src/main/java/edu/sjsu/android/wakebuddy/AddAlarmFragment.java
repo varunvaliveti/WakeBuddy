@@ -1,5 +1,7 @@
 package edu.sjsu.android.wakebuddy;
 
+import static edu.sjsu.android.wakebuddy.AlarmUtils.mapCalendarToDay;
+
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -20,6 +22,7 @@ import android.widget.RadioGroup;
 import android.widget.TimePicker;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 
 public class AddAlarmFragment extends Fragment {
     private NavController controller;
@@ -151,6 +154,11 @@ public class AddAlarmFragment extends Fragment {
             }
 
             String theDays = TextUtils.join(", ",days);
+
+            // If no days are selected, select current day of the week
+            if (theDays.isEmpty()) {
+                theDays = mapCalendarToDay(Calendar.getInstance().get(Calendar.DAY_OF_WEEK));
+            }
 
             Alarm newAlarm = new Alarm(time, label, task, theDays, true);
 

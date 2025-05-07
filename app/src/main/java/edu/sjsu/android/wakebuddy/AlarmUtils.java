@@ -46,25 +46,29 @@ public class AlarmUtils {
         if (isPM && hour != 12) hour += 12;
         if (!isPM && hour == 12) hour = 0;
 
-        if (alarm.getDays().isEmpty()) {
-            // One-time alarm
+        // Create recurring alarm
+        for (String day : daysArray) {
+            int dayOfWeek = mapDayToCalendar(day);
+            if (dayOfWeek == -1) continue;
+
             Calendar calendar = Calendar.getInstance();
+            calendar.set(Calendar.DAY_OF_WEEK, dayOfWeek);
             calendar.set(Calendar.HOUR_OF_DAY, hour);
             calendar.set(Calendar.MINUTE, minute);
             calendar.set(Calendar.SECOND, 0);
             calendar.set(Calendar.MILLISECOND, 0);
 
-
             if (calendar.before(Calendar.getInstance())) {
-                calendar.add(Calendar.DAY_OF_YEAR, 1);
+                calendar.add(Calendar.WEEK_OF_YEAR, 1);
             }
 
             Intent intent = new Intent(context, AlarmReceiver.class);
             intent.putExtra("label", alarm.getLabel());
             intent.putExtra("task", alarm.getTask());
+            intent.putExtra("day", dayOfWeek);
             intent.putExtra("time", alarm.getTime());
 
-            int requestCode = (alarm.getLabel() + "once").hashCode();
+            int requestCode = (alarm.getLabel() + day).hashCode();
             PendingIntent pendingIntent = PendingIntent.getBroadcast(
                     context,
                     requestCode,
@@ -72,64 +76,27 @@ public class AlarmUtils {
                     PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE
             );
 
-            alarmManager.setExactAndAllowWhileIdle(
-                    AlarmManager.RTC_WAKEUP,
-                    calendar.getTimeInMillis(),
-                    pendingIntent
-            );
-        } else {
-            // Recurring alarms
-            for (String day : daysArray) {
-                int dayOfWeek = mapDayToCalendar(day);
-                if (dayOfWeek == -1) continue;
-
-                Calendar calendar = Calendar.getInstance();
-                calendar.set(Calendar.DAY_OF_WEEK, dayOfWeek);
-                calendar.set(Calendar.HOUR_OF_DAY, hour);
-                calendar.set(Calendar.MINUTE, minute);
-                calendar.set(Calendar.SECOND, 0);
-                calendar.set(Calendar.MILLISECOND, 0);
-
-                if (calendar.before(Calendar.getInstance())) {
-                    calendar.add(Calendar.WEEK_OF_YEAR, 1);
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+                if (!alarmManager.canScheduleExactAlarms()) {
+                    Intent reqSchedIntent = new Intent(Settings.ACTION_REQUEST_SCHEDULE_EXACT_ALARM);
+                    context.startActivity(reqSchedIntent);
+                    return;
                 }
+            }
 
-                Intent intent = new Intent(context, AlarmReceiver.class);
-                intent.putExtra("label", alarm.getLabel());
-                intent.putExtra("task", alarm.getTask());
-                intent.putExtra("day", dayOfWeek);
-                intent.putExtra("time", alarm.getTime());
-
-                int requestCode = (alarm.getLabel() + day).hashCode();
-                PendingIntent pendingIntent = PendingIntent.getBroadcast(
-                        context,
-                        requestCode,
-                        intent,
-                        PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE
+            try {
+                alarmManager.setExactAndAllowWhileIdle(
+                        AlarmManager.RTC_WAKEUP,
+                        calendar.getTimeInMillis(),
+                        pendingIntent
                 );
-
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
-                    if (!alarmManager.canScheduleExactAlarms()) {
-                        Intent reqSchedIntent = new Intent(Settings.ACTION_REQUEST_SCHEDULE_EXACT_ALARM);
-                        context.startActivity(reqSchedIntent);
-                        return;
-                    }
-                }
-
-                try {
-                    alarmManager.setExactAndAllowWhileIdle(
-                            AlarmManager.RTC_WAKEUP,
-                            calendar.getTimeInMillis(),
-                            pendingIntent
-                    );
-                } catch (SecurityException e) {
-                    Log.e("Alarm", "Exact alarm scheduling not permitted: " + e.getMessage());
-                }
+            } catch (SecurityException e) {
+                Log.e("Alarm", "Exact alarm scheduling not permitted: " + e.getMessage());
             }
         }
     }
 
-    private static int mapDayToCalendar(String day) {
+    public static int mapDayToCalendar(String day) {
         switch (day) {
             case "Sun": return Calendar.SUNDAY;
             case "Mon": return Calendar.MONDAY;
@@ -139,6 +106,19 @@ public class AlarmUtils {
             case "Fri": return Calendar.FRIDAY;
             case "Sat": return Calendar.SATURDAY;
             default: return -1;
+        }
+    }
+
+    public static String mapCalendarToDay(int calendarDay) {
+        switch (calendarDay) {
+            case Calendar.SUNDAY: return "Sun";
+            case Calendar.MONDAY: return "Mon";
+            case Calendar.TUESDAY: return "Tues";
+            case Calendar.WEDNESDAY: return "Wed";
+            case Calendar.THURSDAY: return "Thurs";
+            case Calendar.FRIDAY: return "Fri";
+            case Calendar.SATURDAY: return "Sat";
+            default: return "";
         }
     }
 }
