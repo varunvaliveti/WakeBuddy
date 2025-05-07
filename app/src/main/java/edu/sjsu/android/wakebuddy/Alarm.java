@@ -3,13 +3,15 @@ package edu.sjsu.android.wakebuddy;
 import java.io.Serializable;
 
 public class Alarm implements Serializable {
-
+        private int id;
         private String time;
         private String label;
         private String task;
         private String days;
         private boolean isEnabled;
 
+        public int getId() { return id; }
+        public void setId(int id) { this.id = id; }
         public String getTask() {
             return task;
         }
@@ -50,7 +52,8 @@ public class Alarm implements Serializable {
             isEnabled = enabled;
         }
 
-        public Alarm(String time, String label,String task, String days, boolean isEnabled) {
+        public Alarm(int id, String time, String label,String task, String days, boolean isEnabled) {
+            this.id = id;
             this.time = time;
             this.label = label;
             this.task = task;

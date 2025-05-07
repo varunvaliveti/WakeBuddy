@@ -3,6 +3,7 @@ package edu.sjsu.android.wakebuddy;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
@@ -51,6 +52,9 @@ public class MovementAlarmActivity extends AppCompatActivity implements SensorEv
         successRunnable = () -> {
             stopService(new Intent(this, AlarmService.class));
             Toast.makeText(this, "Awesome! Alarm stopped after moving 10 seconds!", Toast.LENGTH_SHORT).show();
+            SharedPreferences prefs = getSharedPreferences("WakeBuddyPrefs", MODE_PRIVATE);
+            int count = prefs.getInt("successfulWakeups", 0);
+            prefs.edit().putInt("successfulWakeups", count + 1).apply();
             finish();
         };
         progressUpdateRunnable = new Runnable() {

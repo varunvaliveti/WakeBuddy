@@ -43,6 +43,9 @@ public class BarcodeAlarmActivity extends AppCompatActivity {
                     else if (correct.equals(contents)) {
                         // correct! stop the alarm
                         stopService(new Intent(BarcodeAlarmActivity.this, AlarmService.class));
+                        SharedPreferences prefsWakeups = getSharedPreferences("WakeBuddyPrefs", MODE_PRIVATE);
+                        int count = prefsWakeups.getInt("successfulWakeups", 0);
+                        prefsWakeups.edit().putInt("successfulWakeups", count + 1).apply();
                         finish();
                     }
                     else {

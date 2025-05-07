@@ -1,15 +1,24 @@
 package edu.sjsu.android.wakebuddy;
 
-import android.content.BroadcastReceiver;
+import static android.content.Context.MODE_PRIVATE;
+
+import static androidx.core.app.ActivityCompat.finishAffinity;
+
+import android.app.AlarmManager;
+import android.app.AlertDialog;
 import android.content.Context;
 import android.content.Intent;
-import android.content.IntentFilter;
 import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
 import android.content.res.Configuration;
+import android.os.Build;
 import android.os.Bundle;
 
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.navigation.NavController;
@@ -17,31 +26,45 @@ import androidx.navigation.fragment.NavHostFragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.provider.Settings;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
 import java.lang.reflect.Type;
 import java.util.ArrayList;
+import java.util.List;
+import java.util.Objects;
 
 public class MainFragment extends Fragment implements AlarmDeleteListener, AlarmChangeListener {
     private static ArrayList<Alarm> alarms;
     private NavController controller;
-    private AlarmAdapter adapter;
-    private final BroadcastReceiver alarmUpdateReceiver = new BroadcastReceiver() {
-        @Override
-        public void onReceive(Context context, Intent intent) {
-            // Reload the list and refresh adapter
-            loadAlarmsFromStorage();
-            adapter.updateData(alarms);
-        }
-    };
+    private SharedPreferences prefs;
+    private SharedPreferences.OnSharedPreferenceChangeListener wakeupListener;
+    private TextView wakeupCounterText;
+
+    private final ActivityResultLauncher<String[]> permissionLauncher =
+            registerForActivityResult(
+                    new ActivityResultContracts.RequestMultiplePermissions(),
+                    result -> {
+                        // result: Map<permission, granted>
+                        if (result.containsValue(false)) {
+                            Toast.makeText(
+                                    requireContext(),
+                                    "Camera and microphone are required. Closing app.",
+                                    Toast.LENGTH_LONG
+                            ).show();
+                            finishAffinity(requireActivity());  // closes all activities
+                        }
+                    }
+            );
 
     public MainFragment() {
         alarms = new ArrayList<>();
@@ -50,6 +73,7 @@ public class MainFragment extends Fragment implements AlarmDeleteListener, Alarm
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        checkAndRequestPermissions();
         loadAlarmsFromStorage();
     }
 
@@ -66,11 +90,6 @@ public class MainFragment extends Fragment implements AlarmDeleteListener, Alarm
         alarmsRecyclerView.setLayoutManager(new LinearLayoutManager(requireContext()));
         AlarmAdapter adapter = new AlarmAdapter(alarms, this, this);
         alarmsRecyclerView.setAdapter(adapter);
-
-        ContextCompat.registerReceiver(
-                requireContext(), alarmUpdateReceiver,
-                new IntentFilter("edu.sjsu.android.wakebuddy.ALARMS_UPDATED"),
-                ContextCompat.RECEIVER_NOT_EXPORTED);
 
         getParentFragmentManager()
                 .setFragmentResultListener("alarm_request_key", this, (requestKey, bundle) -> {
@@ -95,11 +114,17 @@ public class MainFragment extends Fragment implements AlarmDeleteListener, Alarm
 
         controller = NavHostFragment.findNavController(this);
 
-        TextView wakeupCounterText = view.findViewById(R.id.wakeupCounterText);
-        SharedPreferences prefs = requireActivity().getSharedPreferences("WakeBuddyPrefs", Context.MODE_PRIVATE);
-        int count = prefs.getInt("successfulWakeups", 0);
-        wakeupCounterText.setText(getString(R.string.wakeup_counter, count));
+        wakeupCounterText = view.findViewById(R.id.wakeupCounterText);
+        prefs = requireActivity().getSharedPreferences("WakeBuddyPrefs", Context.MODE_PRIVATE);
 
+        updateWakeupText();
+
+        wakeupListener = (sharedPreferences, key) -> {
+            if ("successfulWakeups".equals(key)) {
+                updateWakeupText();
+            }
+        };
+        prefs.registerOnSharedPreferenceChangeListener(wakeupListener);
 
         ImageView background = view.findViewById(R.id.backgroundImg);
         int mode = getResources().getConfiguration().uiMode & Configuration.UI_MODE_NIGHT_MASK;
@@ -117,14 +142,42 @@ public class MainFragment extends Fragment implements AlarmDeleteListener, Alarm
 
         ImageButton calendarBtn = view.findViewById(R.id.calendarButton);
         calendarBtn.setOnClickListener(v -> controller.navigate(R.id.calendarFragment));
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+            AlarmManager alarmManager = (AlarmManager) requireContext().getSystemService(Context.ALARM_SERVICE);
+            if (!alarmManager.canScheduleExactAlarms()) {
+                new AlertDialog.Builder(requireContext())
+                        .setTitle("Exact Alarm Permission")
+                        .setMessage("To make sure alarms ring on time, please allow WakeBuddy to schedule exact alarms.")
+                        .setPositiveButton("Grant", (dialog, which) -> {
+                            Intent intent = new Intent(Settings.ACTION_REQUEST_SCHEDULE_EXACT_ALARM);
+                            startActivity(intent);
+                        })
+                        .setNegativeButton("Later", null)
+                        .show();
+            }
+        }
     }
 
     public void goAddAlarm() {
         controller.navigate(R.id.addAlarmFragment);
     }
 
+    private void updateWakeupText() {
+        int count = prefs.getInt("successfulWakeups", 0);
+        wakeupCounterText.setText(getString(R.string.wakeup_counter, count));
+    }
+
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        if (prefs != null && wakeupListener != null) {
+            prefs.unregisterOnSharedPreferenceChangeListener(wakeupListener);
+        }
+    }
+
     private void saveAlarmsToStorage() {
-        SharedPreferences prefs = requireActivity().getSharedPreferences("WakeBuddyPrefs", Context.MODE_PRIVATE);
+        SharedPreferences prefs = requireActivity().getSharedPreferences("WakeBuddyPrefs", MODE_PRIVATE);
         SharedPreferences.Editor editor = prefs.edit();
         Gson gson = new Gson();
         String json = gson.toJson(alarms);
@@ -133,7 +186,7 @@ public class MainFragment extends Fragment implements AlarmDeleteListener, Alarm
     }
 
     private void loadAlarmsFromStorage() {
-        SharedPreferences prefs = requireActivity().getSharedPreferences("WakeBuddyPrefs", Context.MODE_PRIVATE);
+        SharedPreferences prefs = requireActivity().getSharedPreferences("WakeBuddyPrefs", MODE_PRIVATE);
         String json = prefs.getString("alarms", null);
         if (json != null) {
             Type type = new TypeToken<ArrayList<Alarm>>() {}.getType();
@@ -160,9 +213,22 @@ public class MainFragment extends Fragment implements AlarmDeleteListener, Alarm
         saveAlarmsToStorage();
     }
 
-    @Override
-    public void onDestroyView() {
-        super.onDestroyView();
-        requireContext().unregisterReceiver(alarmUpdateReceiver);
+
+    private void checkAndRequestPermissions() {
+        String[] required = {
+                "android.permission.CAMERA",
+                "android.permission.RECORD_AUDIO"
+        };
+        boolean needRequest = false;
+        for (String p : required) {
+            if (ContextCompat.checkSelfPermission(requireContext(), p)
+                    != PackageManager.PERMISSION_GRANTED) {
+                needRequest = true;
+                break;
+            }
+        }
+        if (needRequest) {
+            permissionLauncher.launch(required);
+        }
     }
 }
