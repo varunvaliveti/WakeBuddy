@@ -162,7 +162,8 @@ public class AddAlarmFragment extends Fragment {
             }
 
             String theDays = TextUtils.join(", ",days);
-            Alarm newAlarm = new Alarm(time, label, task, theDays, true);
+            int id = (int) System.currentTimeMillis();
+            Alarm newAlarm = new Alarm(id, time, label, task, theDays, true);
 
             Bundle result = new Bundle();
             result.putSerializable("alarm", newAlarm);

@@ -15,25 +15,19 @@ public class AlarmUtils {
         AlarmManager alarmManager = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
         String[] daysArray = alarm.getDays().split(",\\s*");
 
-        if (alarm.getDays().isEmpty()) {
-            int requestCode = (alarm.getLabel() + "once").hashCode();
+        for (String day : daysArray) {
+            int dayOfWeek = mapDayToCalendar(day);
+            if (dayOfWeek == -1) continue;
+
+            int requestCode = dayOfWeek + alarm.getId();
             Intent intent = new Intent(context, AlarmReceiver.class);
             PendingIntent pendingIntent = PendingIntent.getBroadcast(
                     context, requestCode, intent,
                     PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE
             );
             alarmManager.cancel(pendingIntent);
-        } else {
-            for (String day : daysArray) {
-                int requestCode = (alarm.getLabel() + day).hashCode();
-                Intent intent = new Intent(context, AlarmReceiver.class);
-                PendingIntent pendingIntent = PendingIntent.getBroadcast(
-                        context, requestCode, intent,
-                        PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE
-                );
-                alarmManager.cancel(pendingIntent);
-            }
         }
+
     }
 
     public static void setAlarm(Context context, Alarm alarm) {
@@ -67,8 +61,9 @@ public class AlarmUtils {
             intent.putExtra("task", alarm.getTask());
             intent.putExtra("day", dayOfWeek);
             intent.putExtra("time", alarm.getTime());
+            intent.putExtra("id", alarm.getId());
 
-            int requestCode = (alarm.getLabel() + day).hashCode();
+            int requestCode = alarm.getId() + dayOfWeek;
             PendingIntent pendingIntent = PendingIntent.getBroadcast(
                     context,
                     requestCode,

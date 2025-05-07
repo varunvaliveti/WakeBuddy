@@ -18,6 +18,7 @@ public class AlarmReceiver extends BroadcastReceiver {
         String task = intent.getStringExtra("task");
         int dayOfWeek = intent.getIntExtra("day", -1);
         String time = intent.getStringExtra("time");
+        int id = intent.getIntExtra("id", -1);
 
         Intent serviceIntent = new Intent(context, AlarmService.class);
         serviceIntent.putExtra("label", label);
@@ -53,8 +54,9 @@ public class AlarmReceiver extends BroadcastReceiver {
             repeatIntent.putExtra("task", task);
             repeatIntent.putExtra("day", dayOfWeek);
             repeatIntent.putExtra("time", time);
+            repeatIntent.putExtra("id", id);
 
-            int requestCode = (label + dayOfWeek).hashCode();
+            int requestCode = id + dayOfWeek;
             PendingIntent pendingIntent = PendingIntent.getBroadcast(
                     context,
                     requestCode,
