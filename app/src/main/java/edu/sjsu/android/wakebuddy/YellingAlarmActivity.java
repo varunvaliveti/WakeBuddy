@@ -21,7 +21,7 @@ import java.io.IOException;
 
 public class YellingAlarmActivity extends AppCompatActivity {
     private static final int PERMISSION_REQUEST_CODE = 1001;
-    private static final int AMP_THRESHOLD = 8000;
+    private static final int AMP_THRESHOLD = 7000;
     private static final int YELLING_DURATION_MS = 3000;
     private static final int POLL_INTERVAL_MS = 100;
     public static final String RECORD_AUDIO = "android.permission.RECORD_AUDIO";
@@ -33,6 +33,7 @@ public class YellingAlarmActivity extends AppCompatActivity {
     private TextView statusText;
     private Runnable meterRunnable;
     private Runnable successRunnable;
+    private Boolean firstRun = true;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -52,6 +53,7 @@ public class YellingAlarmActivity extends AppCompatActivity {
                 int amp = recorder != null ? recorder.getMaxAmplitude() : 0;
 
                 if (amp > AMP_THRESHOLD) {
+                    firstRun = false;
                     if (startTime == -1)
                         startTime = System.currentTimeMillis();
 
@@ -64,7 +66,7 @@ public class YellingAlarmActivity extends AppCompatActivity {
                         stopAlarmAndFinish();
                         return;
                     }
-                } else {
+                } else if (!firstRun){
                     startTime = -1;
                     progressBar.setProgress(0);
                     statusText.setText(R.string.you_stopped_try_again);
