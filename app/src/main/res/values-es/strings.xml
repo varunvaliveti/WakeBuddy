@@ -56,5 +56,4 @@
     <string name="spanish">Español</string>
     <string name="no_alarms_message">No hay alarmas en esta fecha.</string>
     <string name="wakeup_counter">Logros: %1$d</string>
-    <string name="day_selector_warning">Si no se selecciona ningún día, la alarma se configurará para el día actual de la semana.</string>
 </resources>
