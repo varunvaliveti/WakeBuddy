@@ -54,30 +54,17 @@ public class AlarmUtils {
             calendar.set(Calendar.SECOND, 0);
             calendar.set(Calendar.MILLISECOND, 0);
 
+
             if (calendar.before(Calendar.getInstance())) {
                 calendar.add(Calendar.DAY_OF_YEAR, 1);
             }
 
-            // Construct the Intent with consistent action and extras
-            Intent intent = new Intent(context.getApplicationContext(), AlarmReceiver.class);
-            intent.setAction("edu.sjsu.android.wakebuddy.ALARM_" + alarm.getLabel() + "_once");
+            Intent intent = new Intent(context, AlarmReceiver.class);
             intent.putExtra("label", alarm.getLabel());
             intent.putExtra("task", alarm.getTask());
             intent.putExtra("time", alarm.getTime());
 
-            int requestCode = (alarm.getLabel() + alarm.getTime() + "once").hashCode();
-
-            // Cancel existing
-            PendingIntent existingIntent = PendingIntent.getBroadcast(
-                    context,
-                    requestCode,
-                    intent,
-                    PendingIntent.FLAG_NO_CREATE | PendingIntent.FLAG_IMMUTABLE
-            );
-            if (existingIntent != null) {
-                alarmManager.cancel(existingIntent);
-            }
-
+            int requestCode = (alarm.getLabel() + "once").hashCode();
             PendingIntent pendingIntent = PendingIntent.getBroadcast(
                     context,
                     requestCode,
@@ -85,22 +72,11 @@ public class AlarmUtils {
                     PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE
             );
 
-            // Permission check for exact alarms (Android 12+)
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
-                if (!alarmManager.canScheduleExactAlarms()) {
-                    Intent reqSchedIntent = new Intent(Settings.ACTION_REQUEST_SCHEDULE_EXACT_ALARM);
-                    context.startActivity(reqSchedIntent);
-                    return;
-                }
-            }
-
             alarmManager.setExactAndAllowWhileIdle(
                     AlarmManager.RTC_WAKEUP,
                     calendar.getTimeInMillis(),
                     pendingIntent
             );
-
-            Log.d("WakeBuddy", "One-time alarm scheduled for: " + calendar.getTime());
         } else {
             // Recurring alarms
             for (String day : daysArray) {
@@ -118,27 +94,13 @@ public class AlarmUtils {
                     calendar.add(Calendar.WEEK_OF_YEAR, 1);
                 }
 
-                // Consistent intent
-                Intent intent = new Intent(context.getApplicationContext(), AlarmReceiver.class);
-                intent.setAction("edu.sjsu.android.wakebuddy.ALARM_" + alarm.getLabel() + "_" + day);
+                Intent intent = new Intent(context, AlarmReceiver.class);
                 intent.putExtra("label", alarm.getLabel());
                 intent.putExtra("task", alarm.getTask());
                 intent.putExtra("day", dayOfWeek);
                 intent.putExtra("time", alarm.getTime());
 
                 int requestCode = (alarm.getLabel() + day).hashCode();
-
-                // Cancel existing
-                PendingIntent existingIntent = PendingIntent.getBroadcast(
-                        context,
-                        requestCode,
-                        intent,
-                        PendingIntent.FLAG_NO_CREATE | PendingIntent.FLAG_IMMUTABLE
-                );
-                if (existingIntent != null) {
-                    alarmManager.cancel(existingIntent);
-                }
-
                 PendingIntent pendingIntent = PendingIntent.getBroadcast(
                         context,
                         requestCode,
@@ -154,13 +116,15 @@ public class AlarmUtils {
                     }
                 }
 
-                alarmManager.setExactAndAllowWhileIdle(
-                        AlarmManager.RTC_WAKEUP,
-                        calendar.getTimeInMillis(),
-                        pendingIntent
-                );
-
-                Log.d("WakeBuddy", "Recurring alarm scheduled for " + day + " @ " + calendar.getTime());
+                try {
+                    alarmManager.setExactAndAllowWhileIdle(
+                            AlarmManager.RTC_WAKEUP,
+                            calendar.getTimeInMillis(),
+                            pendingIntent
+                    );
+                } catch (SecurityException e) {
+                    Log.e("Alarm", "Exact alarm scheduling not permitted: " + e.getMessage());
+                }
             }
         }
     }

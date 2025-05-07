@@ -64,9 +64,9 @@ public class AlarmService extends Service {
         // Creates notification for the alarm
         // Users tap the notification to open the alarm activity
         Notification notification = new NotificationCompat.Builder(this, CHANNEL_ID)
-                .setContentTitle("WakeBuddy Alarm")
-                .setContentText("Alarm: " + (label != null ? label : ""))
-                .setSmallIcon(R.drawable.ic_launcher_foreground)
+                .setContentTitle("Wake Up!")
+                .setContentText("Alarm: " + (label != null ? label : "") + " | Solve the challenge to stop the alarm")
+                .setSmallIcon(R.mipmap.ic_launcher_round)
                 .setPriority(NotificationCompat.PRIORITY_HIGH)
                 .setCategory(NotificationCompat.CATEGORY_ALARM)
                 .setContentIntent(pendingIntent)
