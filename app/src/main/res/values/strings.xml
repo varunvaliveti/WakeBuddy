@@ -49,5 +49,12 @@
     <string name="keep_moving">Keep moving!</string>
     <string name="you_stopped_try_again">You stopped! Try again!</string>
     <string name="keep_yelling">Keep Yelling!</string>
+    <string name="settings_title">Settings</string>
+    <string name="language_button">Change Language</string>
+    <string name="select_language">Select Language</string>
+    <string name="english">English</string>
+    <string name="spanish">Español</string>
+    <string name="no_alarms_message">No alarms for selected date.</string>
+    <string name="wakeup_counter">Wakeups: %1$d</string>
     <string name="day_selector_warning">If no days are selected, the alarm will be set for the current day of the week.</string>
 </resources>

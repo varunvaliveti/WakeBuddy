@@ -108,7 +108,8 @@ public class MainFragment extends Fragment implements AlarmDeleteListener, Alarm
         TextView wakeupCounterText = view.findViewById(R.id.wakeupCounterText);
         SharedPreferences prefs = requireActivity().getSharedPreferences("WakeBuddyPrefs", MODE_PRIVATE);
         int count = prefs.getInt("successfulWakeups", 0);
-        wakeupCounterText.setText("Wakeups: " + count);
+        wakeupCounterText.setText(getString(R.string.wakeup_counter, count));
+
 
         ImageView background = view.findViewById(R.id.backgroundImg);
         int mode = getResources().getConfiguration().uiMode & Configuration.UI_MODE_NIGHT_MASK;

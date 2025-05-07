@@ -4,18 +4,19 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.res.Configuration;
 import android.os.Bundle;
-
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatDelegate;
 import androidx.fragment.app.Fragment;
-
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.RadioGroup;
-
+import android.app.AlertDialog;
+import com.google.android.material.materialswitch.MaterialSwitch;
+import java.util.Locale;
 import com.google.android.material.materialswitch.MaterialSwitch;
 
 public class SettingsFragment extends Fragment {
@@ -83,5 +84,41 @@ public class SettingsFragment extends Fragment {
             prefs.edit().putString("correct_code", code).apply();
             BarcodeAlarmActivity.setCorrect(code);
         });
+
+        // ✅ Language button setup
+        Button btnLanguage = view.findViewById(R.id.btn_language);
+        btnLanguage.setOnClickListener(v -> showLanguageDialog());
+    }
+
+    private void showLanguageDialog() {
+        final String[] languages = { getString(R.string.english), getString(R.string.spanish) };
+
+        new AlertDialog.Builder(requireContext())
+                .setTitle(R.string.select_language)
+                .setItems(languages, (dialog, which) -> {
+                    if (which == 0) {
+                        setLocale("en");
+                    } else if (which == 1) {
+                        setLocale("es");
+                    }
+                }).show();
+    }
+
+    private void setLocale(String langCode) {
+        Locale locale = new Locale(langCode);
+        Locale.setDefault(locale);
+        Configuration config = new Configuration();
+        config.setLocale(locale);
+        requireActivity().getBaseContext().getResources().updateConfiguration(
+                config, requireActivity().getBaseContext().getResources().getDisplayMetrics());
+
+        // Save preference
+        SharedPreferences prefs = requireContext().getSharedPreferences("Settings", Context.MODE_PRIVATE);
+        prefs.edit().putString("App_Lang", langCode).apply();
+
+        // Restart activity to apply changes
+        requireActivity().recreate();
     }
 }
+
+

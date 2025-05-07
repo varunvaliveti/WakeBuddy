@@ -2,6 +2,7 @@ package edu.sjsu.android.wakebuddy;
 
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.content.res.Configuration;
 import android.os.Bundle;
 
 import androidx.activity.EdgeToEdge;
@@ -13,8 +14,25 @@ import androidx.core.view.WindowInsetsCompat;
 import androidx.navigation.NavController;
 import androidx.navigation.fragment.NavHostFragment;
 
+import java.util.Locale;
+
 public class MainActivity extends AppCompatActivity {
     private NavController controller;
+
+    @Override
+    protected void attachBaseContext(Context base) {
+        SharedPreferences prefs = base.getSharedPreferences("Settings", MODE_PRIVATE);
+        String lang = prefs.getString("App_Lang", "en");
+        Locale newLocale = new Locale(lang);
+        Locale.setDefault(newLocale);
+
+        Configuration config = new Configuration();
+        config.setLocale(newLocale);
+        Context context = base.createConfigurationContext(config);
+
+        super.attachBaseContext(context);
+    }
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
