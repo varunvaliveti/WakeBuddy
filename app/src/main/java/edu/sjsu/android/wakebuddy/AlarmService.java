@@ -13,6 +13,7 @@ import android.os.Build;
 import android.os.IBinder;
 import android.os.VibrationEffect;
 import android.os.Vibrator;
+import android.util.Log;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -44,6 +45,9 @@ public class AlarmService extends Service {
     public int onStartCommand(Intent intent, int flags, int startId) {
         String label = intent.getStringExtra("label");
         String task = intent.getStringExtra("task");
+        String time = intent.getStringExtra("time");
+
+        Log.d("WakeBuddy", "📣 Alarm RECEIVED for: " + label + " at " + time + " (task: " + task + ")");
 
         assert task != null;
         Intent activityIntent = getActivityIntent(task, label);
