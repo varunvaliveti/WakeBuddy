@@ -23,7 +23,7 @@ of fun tasks that you can do to turn off the alarm. These tasks can range from a
 ### APK
 Located in *WakeBuddy/Artifacts/wakeBuddy.apk*
 ### Backlog
-Located in *WakeBuddy/Artifacts/wakeBuddyBacklog.pdf*
+Located in *[WakeBuddy/Artifacts/wakeBuddyBacklog.pdf](/Artifacts/wakeBuddyBacklog.pdf)*
 ### Final Report
 Located in *WakeBuddy/Artifacts/wakeBuddyFinalReport.pdf/mp4*
 
