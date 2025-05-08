@@ -18,9 +18,9 @@ import com.google.android.material.switchmaterial.SwitchMaterial;
 import java.util.List;
 
 public class AlarmAdapter extends RecyclerView.Adapter<AlarmAdapter.AlarmViewHolder> {
-    private List<Alarm> alarmList;
-    private AlarmDeleteListener deleteListener;
-    private AlarmChangeListener changeListener;
+    private final List<Alarm> alarmList;
+    private final AlarmDeleteListener deleteListener;
+    private final AlarmChangeListener changeListener;
 
     public AlarmAdapter(List<Alarm> alarmList, AlarmDeleteListener deleteListener, AlarmChangeListener changeListener) {
         this.alarmList = alarmList;

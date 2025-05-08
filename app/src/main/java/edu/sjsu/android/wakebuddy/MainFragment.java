@@ -18,7 +18,6 @@ import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.navigation.NavController;
@@ -40,8 +39,6 @@ import com.google.gson.reflect.TypeToken;
 
 import java.lang.reflect.Type;
 import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
 
 public class MainFragment extends Fragment implements AlarmDeleteListener, AlarmChangeListener {
     private static ArrayList<Alarm> alarms;
@@ -155,6 +152,7 @@ public class MainFragment extends Fragment implements AlarmDeleteListener, Alarm
                         })
                         .setNegativeButton(getString(R.string.later), null)
                         .show();
+            }
         }
     }
 

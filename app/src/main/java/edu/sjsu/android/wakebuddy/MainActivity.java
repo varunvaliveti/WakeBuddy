@@ -17,7 +17,6 @@ import androidx.navigation.fragment.NavHostFragment;
 import java.util.Locale;
 
 public class MainActivity extends AppCompatActivity {
-    private NavController controller;
 
     @Override
     protected void attachBaseContext(Context base) {
@@ -49,7 +48,7 @@ public class MainActivity extends AppCompatActivity {
 
         NavHostFragment navHostFragment = (NavHostFragment) getSupportFragmentManager().findFragmentById(R.id.fragment);
         assert navHostFragment != null;
-        controller = navHostFragment.getNavController();
+        NavController controller = navHostFragment.getNavController();
     }
 
     public static void applyDarkModeSetting(Context context) {
