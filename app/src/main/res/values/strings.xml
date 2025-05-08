@@ -57,4 +57,6 @@
     <string name="no_alarms_message">No alarms for selected date.</string>
     <string name="wakeup_counter">Wakeups: %1$d</string>
     <string name="day_selector_warning">If no day is selected, the alarm will be set for the current day of the week.</string>
+    <string name="toast_correct">Correct! Have a great day!</string>
+    <string name="toast_wrong">Wrong answer!</string>
 </resources>

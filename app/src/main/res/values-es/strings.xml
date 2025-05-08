@@ -56,4 +56,6 @@
     <string name="spanish">Español</string>
     <string name="no_alarms_message">No hay alarmas en esta fecha.</string>
     <string name="wakeup_counter">Logros: %1$d</string>
+    <string name="toast_correct">¡Correcto! ¡Que tengas un gran día!</string>
+    <string name="toast_wrong">Respuesta Equivocada!</string>
 </resources>

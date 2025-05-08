@@ -23,13 +23,18 @@ import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.Button;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Collections;
+import java.util.Locale;
 import java.util.Random;
 import android.view.animation.AnimationSet;
 import android.animation.AnimatorSet;
 import android.animation.ObjectAnimator;
 import android.animation.ValueAnimator;
 import android.view.animation.LinearInterpolator;
+import java.time.LocalDate;
+import java.util.HashSet;
+import java.util.Set;
 
 
 public class MathAlarmActivity extends AppCompatActivity {
@@ -88,19 +93,33 @@ public class MathAlarmActivity extends AppCompatActivity {
             int selected = answers.get(i);
             balloons[i].setOnClickListener(v -> {
                 if (selected == correctAnswer) {
-                    Toast.makeText(this, " Correct! Have a great day!", Toast.LENGTH_SHORT).show();
+
+                    Toast.makeText(this, getString(R.string.toast_correct), Toast.LENGTH_SHORT).show();
 
                     // Stop the alarm service (ringtone)
                     stopService(new Intent(this, AlarmService.class));
 
                     // Record successful wake-up
                     SharedPreferences prefs = getSharedPreferences("WakeBuddyPrefs", MODE_PRIVATE);
+
+                    // Update counter
                     int count = prefs.getInt("successfulWakeups", 0);
                     prefs.edit().putInt("successfulWakeups", count + 1).apply();
 
+                   // Track today's date as a completed wake-up
+                    Set<String> completedDates = prefs.getStringSet("completedDates", new HashSet<>());
+                    completedDates = new HashSet<>(completedDates);
+                    Calendar calendar = Calendar.getInstance();
+                    int year = calendar.get(Calendar.YEAR);
+                    int month = calendar.get(Calendar.MONTH) + 1; // Month is 0-indexed
+                    int day = calendar.get(Calendar.DAY_OF_MONTH);
+                    String today = String.format(Locale.US, "%04d-%02d-%02d", year, month, day);  // Format: 2025-05-06
+                    completedDates.add(today);
+                    prefs.edit().putStringSet("completedDates", completedDates).apply();
+
                     finish(); // Exit screen
                 } else {
-                    Toast.makeText(this, "Wrong answer!", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(this, getString(R.string.toast_wrong), Toast.LENGTH_SHORT).show();
                 }
             });
         }
