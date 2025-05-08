@@ -17,7 +17,6 @@ import android.widget.RadioGroup;
 import android.app.AlertDialog;
 import com.google.android.material.materialswitch.MaterialSwitch;
 import java.util.Locale;
-import com.google.android.material.materialswitch.MaterialSwitch;
 
 public class SettingsFragment extends Fragment {
 

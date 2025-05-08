@@ -63,6 +63,7 @@ public class AddAlarmFragment extends Fragment {
             editingAlarm = (Alarm) getArguments().getSerializable("edit_alarm");
             editingIndex = getArguments().getInt("edit_index");
 
+            assert editingAlarm != null;
             ((EditText) view.findViewById(R.id.alarm_name_entry)).setText(editingAlarm.getLabel());
 
             String[] timeParts = editingAlarm.getTime().split(":| ");

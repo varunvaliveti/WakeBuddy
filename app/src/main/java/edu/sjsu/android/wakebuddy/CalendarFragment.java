@@ -27,7 +27,6 @@ import java.util.Locale;
 
 public class CalendarFragment extends Fragment {
 
-    private CalendarView calendarView;
     private TextView alarmsText;
 
     @Nullable
@@ -35,7 +34,7 @@ public class CalendarFragment extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
                              @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_calendar, container, false);
-        calendarView = view.findViewById(R.id.calendarView);
+        CalendarView calendarView = view.findViewById(R.id.calendarView);
         alarmsText = view.findViewById(R.id.alarmsText);
 
         ImageView logoOverlay = view.findViewById(R.id.loadLogoOverlay);
@@ -61,6 +60,7 @@ public class CalendarFragment extends Fragment {
             String dateStr = String.format(Locale.US, "%04d-%02d-%02d", year, month + 1, day);
             SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd", Locale.US);
             Date date = format.parse(dateStr);
+            assert date != null;
             return new SimpleDateFormat("EEE", Locale.US).format(date);  // e.g., "Mon", "Tue"
         } catch (Exception e) {
             return "";
