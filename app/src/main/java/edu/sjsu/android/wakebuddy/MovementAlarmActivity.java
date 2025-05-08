@@ -51,7 +51,7 @@ public class MovementAlarmActivity extends AppCompatActivity implements SensorEv
 
         successRunnable = () -> {
             stopService(new Intent(this, AlarmService.class));
-            Toast.makeText(this, "Awesome! Alarm stopped after moving 10 seconds!", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, getString(R.string.movement_alarm_success), Toast.LENGTH_SHORT).show();
             SharedPreferences prefs = getSharedPreferences("WakeBuddyPrefs", MODE_PRIVATE);
             int count = prefs.getInt("successfulWakeups", 0);
             prefs.edit().putInt("successfulWakeups", count + 1).apply();

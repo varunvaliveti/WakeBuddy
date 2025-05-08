@@ -58,4 +58,17 @@
     <string name="wakeup_counter">Logros: %1$d</string>
     <string name="toast_correct">¡Correcto! ¡Que tengas un gran día!</string>
     <string name="toast_wrong">Respuesta Equivocada!</string>
+    <string name="day_selector_warning">Si no seleccionas un dia, alarma es programada para el dia actual </string>
+    <string name="scan_cancelled">Scaner cancelado. Intenta de nuevo.</string>
+    <string name="scan_prompt">Escanea tu codigo para apagar la alarma</string>
+    <string name="wrong_code">Codigo Equivocado. Intenta de nuevo</string>
+    <string name="camera_microphone_required">Se requieren la cámara y el micrófono. Cerrando la aplicación.</string>
+    <string name="exact_alarm_title">Permiso de alarma exacta</string>
+    <string name="exact_alarm_message">Para asegurarte de que las alarmas suenen a tiempo, permite que WakeBuddy programe alarmas exactas.</string>
+    <string name="grant">Conceder</string>
+    <string name="later">Más tarde</string>
+    <string name="movement_alarm_success">Genial! Alarma apagada despues de 10 sec!</string>
+    <string name="yelling_alarm_success">¡Genial! La alarma se detuvo después de gritar durante 3 segundos.</string>
+    <string name="mic_permission_required">¡Se requiere permiso del micrófono!</string>
+    <string name="yelling_alarm_dismissed">Buenos pulmones! Alarma apagada.</string>
 </resources>

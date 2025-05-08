@@ -58,7 +58,7 @@ public class MainFragment extends Fragment implements AlarmDeleteListener, Alarm
                         if (result.containsValue(false)) {
                             Toast.makeText(
                                     requireContext(),
-                                    "Camera and microphone are required. Closing app.",
+                                    getString(R.string.camera_microphone_required),
                                     Toast.LENGTH_LONG
                             ).show();
                             finishAffinity(requireActivity());  // closes all activities
@@ -147,15 +147,14 @@ public class MainFragment extends Fragment implements AlarmDeleteListener, Alarm
             AlarmManager alarmManager = (AlarmManager) requireContext().getSystemService(Context.ALARM_SERVICE);
             if (!alarmManager.canScheduleExactAlarms()) {
                 new AlertDialog.Builder(requireContext())
-                        .setTitle("Exact Alarm Permission")
-                        .setMessage("To make sure alarms ring on time, please allow WakeBuddy to schedule exact alarms.")
-                        .setPositiveButton("Grant", (dialog, which) -> {
+                        .setTitle(getString(R.string.exact_alarm_title))
+                        .setMessage(getString(R.string.exact_alarm_message))
+                        .setPositiveButton(getString(R.string.grant), (dialog, which) -> {
                             Intent intent = new Intent(Settings.ACTION_REQUEST_SCHEDULE_EXACT_ALARM);
                             startActivity(intent);
                         })
-                        .setNegativeButton("Later", null)
+                        .setNegativeButton(getString(R.string.later), null)
                         .show();
-            }
         }
     }
 

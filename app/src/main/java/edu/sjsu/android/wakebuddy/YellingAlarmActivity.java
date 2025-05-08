@@ -45,7 +45,7 @@ public class YellingAlarmActivity extends AppCompatActivity {
 
         successRunnable = () -> {
             stopService(new Intent(this, AlarmService.class));
-            Toast.makeText(this, "Awesome! Alarm stopped after yelling for 3 seconds!", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, getString(R.string.yelling_alarm_success), Toast.LENGTH_SHORT).show();
             finish();
         };
         meterRunnable = new Runnable() {
@@ -90,7 +90,7 @@ public class YellingAlarmActivity extends AppCompatActivity {
         if (req == PERMISSION_REQUEST_CODE && g.length > 0 && g[0] == PackageManager.PERMISSION_GRANTED) {
             startMeter();
         } else {
-            Toast.makeText(this, "Mic permission required!", Toast.LENGTH_LONG).show();
+            Toast.makeText(this, getString(R.string.mic_permission_required), Toast.LENGTH_LONG).show();
             finish();
         }
     }
@@ -125,7 +125,7 @@ public class YellingAlarmActivity extends AppCompatActivity {
         int count = prefs.getInt("successfulWakeups", 0);
         prefs.edit().putInt("successfulWakeups", count + 1).apply();
 
-        Toast.makeText(this, "Nice lungs! Alarm dismissed.", Toast.LENGTH_SHORT).show();
+        Toast.makeText(this, getString(R.string.yelling_alarm_dismissed), Toast.LENGTH_SHORT).show();
         finish();
     }
 

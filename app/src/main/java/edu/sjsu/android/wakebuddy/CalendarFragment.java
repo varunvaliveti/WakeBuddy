@@ -88,6 +88,6 @@ public class CalendarFragment extends Fragment {
             }
         }
 
-        alarmsText.setText(sb.length() > 0 ? sb.toString() : "No alarms for selected date.");
+        alarmsText.setText(sb.length() > 0 ? sb.toString() : getString(R.string.no_alarms_message));
     }
 }

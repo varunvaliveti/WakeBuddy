@@ -85,7 +85,7 @@ public class SettingsFragment extends Fragment {
             BarcodeAlarmActivity.setCorrect(code);
         });
 
-        // ✅ Language button setup
+        // Language button setup
         Button btnLanguage = view.findViewById(R.id.btn_language);
         btnLanguage.setOnClickListener(v -> showLanguageDialog());
     }

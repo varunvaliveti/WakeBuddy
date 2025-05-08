@@ -59,4 +59,16 @@
     <string name="day_selector_warning">If no day is selected, the alarm will be set for the current day of the week.</string>
     <string name="toast_correct">Correct! Have a great day!</string>
     <string name="toast_wrong">Wrong answer!</string>
+    <string name="scan_cancelled">Scan cancelled. Please try again.</string>
+    <string name="scan_prompt">Scan barcode to stop alarm</string>
+    <string name="wrong_code">Wrong code. Try again.</string>
+    <string name="camera_microphone_required">Camera and microphone are required. Closing app.</string>
+    <string name="exact_alarm_title">Exact Alarm Permission</string>
+    <string name="exact_alarm_message">To make sure alarms ring on time, please allow WakeBuddy to schedule exact alarms.</string>
+    <string name="grant">Grant</string>
+    <string name="later">Later</string>
+    <string name="movement_alarm_success">Awesome! Alarm stopped after moving 10 seconds!</string>
+    <string name="yelling_alarm_success">Awesome! Alarm stopped after yelling for 3 seconds!</string>
+    <string name="mic_permission_required">Mic permission required!</string>
+    <string name="yelling_alarm_dismissed">Nice lungs! Alarm dismissed.</string>
 </resources>

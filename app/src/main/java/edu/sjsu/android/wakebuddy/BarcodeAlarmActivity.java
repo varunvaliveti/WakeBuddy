@@ -34,11 +34,11 @@ public class BarcodeAlarmActivity extends AppCompatActivity {
                     String contents = result.getContents();
                     if (contents == null) {
                         Toast.makeText(BarcodeAlarmActivity.this,
-                                "Scan cancelled. Please try again.",
+                                getString(R.string.scan_cancelled),
                                 Toast.LENGTH_SHORT).show();
 
                         // re-launch if you want
-                        barcodeLauncher.launch(new ScanOptions().setPrompt("Scan barcode to stop alarm"));
+                        barcodeLauncher.launch(new ScanOptions().setPrompt(getString(R.string.scan_prompt)));
                     }
                     else if (correct.equals(contents)) {
                         // correct! stop the alarm
@@ -50,9 +50,9 @@ public class BarcodeAlarmActivity extends AppCompatActivity {
                     }
                     else {
                         Toast.makeText(BarcodeAlarmActivity.this,
-                                "Wrong code. Try again.",
+                                getString(R.string.wrong_code),
                                 Toast.LENGTH_SHORT).show();
-                        barcodeLauncher.launch(new ScanOptions().setPrompt("Scan barcode to stop alarm"));
+                        barcodeLauncher.launch(new ScanOptions().setPrompt(getString(R.string.scan_prompt)));
                     }
                 }
         );
@@ -60,7 +60,7 @@ public class BarcodeAlarmActivity extends AppCompatActivity {
         barcodeLauncher.launch(
                 new ScanOptions()
                         .setDesiredBarcodeFormats(ScanOptions.ALL_CODE_TYPES)
-                        .setPrompt("Scan barcode to stop alarm")
+                        .setPrompt(getString(R.string.scan_prompt))
                         .setBeepEnabled(true)
         );
     }
