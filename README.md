@@ -29,5 +29,5 @@ Located in *WakeBuddy/Artifacts/wakeBuddyFinalReport.pdf/mp4*
 
 ---
 ## Barcode Image Locations
-Located in *[app/src/main/res/drawable/code_xxx.jpg]
+Located in *app/src/main/res/drawable/code_xxx.jpg*
 
