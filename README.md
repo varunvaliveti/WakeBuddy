@@ -25,7 +25,8 @@ Located in *[WakeBuddy/Artifacts/wakeBuddy.apk](/Artifacts/wakeBuddy.apk)*
 ### Backlog
 Located in *[WakeBuddy/Artifacts/wakeBuddyBacklog.pdf](/Artifacts/wakeBuddyBacklog.pdf)*
 ### Final Report
-Located in *WakeBuddy/Artifacts/wakeBuddyFinalReport.pdf/mp4*
+Located in *[WakeBuddy/Artifacts/WakeBuddyFinalReport.pdf](/Artifacts/WakeBuddyFinalReport.pdf)*  
+Alternate Link to View User Guide: [User Guide Video](https://drive.google.com/file/d/1U48pIjfKO9nujtbBMt_thyGznOREt1RN/view?usp=sharing)
 
 ---
 ## Barcode Image Locations
